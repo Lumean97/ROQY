@@ -1,6 +1,17 @@
 <template>
   <div class="conf-wrapper">
-    <h3>Config UI</h3>
+    <div class="leftside">
+      <div class="group-wrapper">
+        <group-view class="wrapper"></group-view>
+      </div>
+      <div class="block-wrapper wrapper">
+        <block-view :blocks="blocks"></block-view>
+      </div>
+    </div>
+    <div class="block-config-wrapper wrapper">
+      <block-config></block-config>
+      <p>Test</p>
+    </div>
   </div>
 </template>
 
@@ -11,9 +22,28 @@ import blockView from './Config/BlockView.vue'
 import groupView from './Config/GroupView.vue'
 
 export default {
+  data: function () {
+    return {
+      blocks: [
+        {
+          id: 0,
+          title: 'Geschenkbestellung'
+        },
+        {
+          id: 1,
+          title: 'Rechtzeitige Lieferung'
+        }
+      ]
+    }
+  },
   computed: {
-    bot () {
-      return this.$store.gettters.getBot
+    groups () {
+      let groups = []
+      this.blocks.forEach((block, index, a) => {
+        groups.push(block)
+      })
+
+      return groups
     }
   },
   components: {
@@ -29,10 +59,28 @@ export default {
   height: 700px;
   overflow: hidden;
 }
+.group-wrapper {
+  height: 80%;
+}
 
-.conf-frame {
-  width: 100%;
+.block-wrapper {
+  height: 20%;
+}
+
+.leftside {
+  width: 60%;
   height: 100%;
-  border: none;
+  display: inline-block;
+}
+
+.wrapper {
+  background-color: white;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)
+}
+
+.block-config-wrapper {
+  width: 25%;
+  height: 100%;
+  display: inline-block;
 }
 </style>

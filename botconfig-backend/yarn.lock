@@ -48,7 +48,7 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bluebird@^3.5.0:
+bluebird@^3.4.7, bluebird@^3.5.0:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
@@ -420,6 +420,12 @@ ms@2.0.0:
 negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
+
+node-command-line@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/node-command-line/-/node-command-line-1.0.2.tgz#884ea62015709f14c23a54a15b3f9cb2e420a9a0"
+  dependencies:
+    bluebird "^3.4.7"
 
 oauth-sign@~0.8.2:
   version "0.8.2"
