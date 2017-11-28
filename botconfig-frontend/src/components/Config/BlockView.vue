@@ -47,4 +47,14 @@ export default {
     font-family: Roboto;
     font-size: 14px;
   }
+
+  .default-btn {
+    background-color: orange;
+    border-radius: 16px;
+    padding: 5px;
+    margin: 10px;
+    color: white;
+    font-family: Roboto;
+    font-size: 14px;
+  }
 </style>
