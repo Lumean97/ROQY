@@ -129,7 +129,6 @@ export default {
 #leftside {
   width: 60%;
   height: 100%;
-  display: inline-block;
 }
 
 .wrapper {
