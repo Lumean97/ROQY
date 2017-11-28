@@ -2,7 +2,8 @@
   <div id="conf-wrapper">
     <div id="leftside">
       <div id="group-wrapper">
-        <group-view :group="groups" :blocks="blocks" :selected="rootSelect" class="wrapper"></group-view>
+        <tree-view v-on:selection-changed="selectSubTree(0,$event)" :group="groups" :blocks="blocks" :selected="rootSelect" class="wrapper"></tree-view>
+        <tree-view v-for="(group,index) in subGroups" :key="group.block" v-on:selection-changed="selectSubTree(index + 1,$event)" :group="group.children" :blocks="blocks" :selected="group.selection" class="wrapper"></tree-view>
       </div>
       <div class="block-wrapper wrapper">
         <block-view :blocks="blocks"></block-view>
@@ -19,7 +20,7 @@
 import 'vue-material/dist/vue-material.css'
 import blockConfig from './Config/BlockConfig.vue'
 import blockView from './Config/BlockView.vue'
-import groupView from './Config/GroupView.vue'
+import treeView from './Config/TreeView.vue'
 
 export default {
   data: function () {
@@ -41,23 +42,71 @@ export default {
       ],
       groups: [
         {
+          selection: 0,
           block: 1,
           children: [
             {
+              selection: 0,
               block: 0,
-              children: []
+              children: [
+                {
+                  selection: 0,
+                  block: 2,
+                  children: []
+                }
+              ]
             }
           ]
         },
         {
+          selection: 0,
           block: 2,
-          children: []
+          children: [
+            {
+              selection: 0,
+              block: 1,
+              children: []
+            },
+            {
+              selection: 0,
+              block: 2,
+              children: []
+            }
+          ]
         }
       ]
     }
   },
   components: {
-    blockConfig, blockView, groupView
+    blockConfig, blockView, treeView
+  },
+  computed: {
+    /**
+     * Returns all groups that are currently selected in the tree
+     */
+    subGroups () {
+      if (this.groups.length === 0) {
+        return []
+      }
+
+      var groups = []
+      var current = this.groups[this.rootSelect]
+      while (current !== undefined && current.children.length !== 0) {
+        groups.push(current)
+        current = current.children[current.selection]
+      }
+
+      return groups
+    }
+  },
+  methods: {
+    selectSubTree (groupID, blockID) {
+      if (groupID === 0) {
+        this.rootSelect = blockID
+      } else {
+        this.subGroups[groupID - 1].selection = blockID
+      }
+    }
   }
 }
 </script>

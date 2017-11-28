@@ -8,14 +8,13 @@
 
 <script>
 export default {
-  props: ['group', 'blocks', 'selected', 'select'],
+  props: ['group', 'blocks', 'selected'],
   methods: {
     isSelected (index) {
-      console.log(index)
       return this.$props.selected === index
     },
     select (index) {
-      this.$props.select(index)
+      this.$emit('selection-changed', index)
     }
   }
 }
@@ -25,6 +24,7 @@ export default {
   #list-container {
     height: 500px;
     width: 200px;
+    display: inline-block;
   }
   .block-container {
     height: 40px;
