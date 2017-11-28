@@ -1,8 +1,8 @@
 <template>
-  <div class="conf-wrapper">
-    <div class="leftside">
-      <div class="group-wrapper">
-        <group-view class="wrapper"></group-view>
+  <div id="conf-wrapper">
+    <div id="leftside">
+      <div id="group-wrapper">
+        <group-view :group="groups" :blocks="blocks" :selected="rootSelect" class="wrapper"></group-view>
       </div>
       <div class="block-wrapper wrapper">
         <block-view :blocks="blocks"></block-view>
@@ -24,6 +24,7 @@ import groupView from './Config/GroupView.vue'
 export default {
   data: function () {
     return {
+      rootSelect: 1,
       blocks: [
         {
           id: 0,
@@ -32,18 +33,27 @@ export default {
         {
           id: 1,
           title: 'Rechtzeitige Lieferung'
+        },
+        {
+          id: 2,
+          title: 'Rückgabe & Reklamation'
+        }
+      ],
+      groups: [
+        {
+          block: 1,
+          children: [
+            {
+              block: 0,
+              children: []
+            }
+          ]
+        },
+        {
+          block: 2,
+          children: []
         }
       ]
-    }
-  },
-  computed: {
-    groups () {
-      let groups = []
-      this.blocks.forEach((block, index, a) => {
-        groups.push(block)
-      })
-
-      return groups
     }
   },
   components: {
@@ -53,24 +63,22 @@ export default {
 </script>
 
 <style scoped>
-.conf-wrapper {
-  display: block;
-  width: 100%;
-  height: 700px;
-  overflow: hidden;
+#conf-wrapper {
+  display: flex;
+  height: 830px;
 }
-.group-wrapper {
+#group-wrapper {
   height: 80%;
+  padding: 25px;
 }
 
 .block-wrapper {
   height: 20%;
 }
 
-.leftside {
+#leftside {
   width: 60%;
   height: 100%;
-  display: inline-block;
 }
 
 .wrapper {
@@ -79,8 +87,7 @@ export default {
 }
 
 .block-config-wrapper {
-  width: 25%;
   height: 100%;
-  display: inline-block;
+  flex: 1;
 }
 </style>

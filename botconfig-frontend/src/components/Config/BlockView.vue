@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="button-wrapper">
-      <md-button class="md-raised md-primary rounded">new block</md-button>
-      <md-button class="md-raised md-primary rounded">new group</md-button>
+      <button class="default-btn">new block</button>
+      <button class="default-btn">new group</button>
     </div>
     <div class="blockBubble" v-for="(block, blocks) in blocks" :key="block.id">
       <span>{{block.title}}</span>
@@ -24,6 +24,7 @@ export default {
     display: inline;
     padding: 7px;
     margin: 5px;
+    cursor: grab;
   }
 
   .rounded {
@@ -35,5 +36,15 @@ export default {
     width: 100%;
     display: flex;
     flex-direction: row-reverse;
+  }
+
+  .default-btn {
+    background-color: orange;
+    border-radius: 16px;
+    padding: 5px;
+    margin: 10px;
+    color: white;
+    font-family: Roboto;
+    font-size: 14px;
   }
 </style>
