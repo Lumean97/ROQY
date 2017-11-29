@@ -2,8 +2,7 @@
   <div id="conf-wrapper">
     <div id="leftside">
       <div id="group-wrapper">
-        <tree-view :row="0" v-on:selection-changed="selectSubTree(0,$event)" :row-select="rowSelect" :group="groups" :blocks="blocks" :selected="rootSelect" class="wrapper"></tree-view>
-        <tree-view :row="index + 1" v-for="(group,index) in subGroups" :rowSelect="rowSelect" :key="group.block" v-on:selection-changed="selectSubTree(index + 1,$event)" :group="group.children" :blocks="blocks" :selected="group.selection" class="wrapper"></tree-view>
+        <tree-view :row="index" v-for="(group,index) in subGroups" :rowSelect="rowSelect" :key="group.block" v-on:selection-changed="selectSubTree(index,$event)" :group="group.children" :blocks="blocks" :selected="group.selection" class="wrapper"></tree-view>
       </div>
       <div class="block-wrapper wrapper">
         <block-view :blocks="blocks"></block-view>
@@ -26,7 +25,7 @@ export default {
   data: function () {
     return {
       rowSelect: -1,
-      rootSelect: -1,
+      rootSelect: 2,
       blocks: [
         {
           id: 0,
@@ -107,8 +106,7 @@ export default {
       }
 
       var groups = []
-      // groups.push(this.groups)
-      var current = this.groups[this.rootSelect]
+      var current = {'block': -1, 'selection': this.rootSelect, 'children': this.groups}
       while (current !== undefined && current.children.length !== 0) {
         groups.push(current)
         current = current.children[current.selection]
@@ -121,9 +119,10 @@ export default {
     selectSubTree (groupID, blockID) {
       this.rowSelect = groupID
       if (groupID === 0) {
+        console.log('set root selection : ' + groupID)
         this.rootSelect = blockID
       } else {
-        this.subGroups[groupID - 1].selection = blockID
+        this.subGroups[groupID].selection = blockID
       }
     }
   }
