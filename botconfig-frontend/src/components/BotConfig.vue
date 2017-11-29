@@ -2,8 +2,8 @@
   <div id="conf-wrapper">
     <div id="leftside">
       <div id="group-wrapper">
-        <tree-view v-on:selection-changed="selectSubTree(0,$event)" :group="groups" :blocks="blocks" :selected="rootSelect" class="wrapper"></tree-view>
-        <tree-view v-for="(group,index) in subGroups" :key="group.block" v-on:selection-changed="selectSubTree(index + 1,$event)" :group="group.children" :blocks="blocks" :selected="group.selection" class="wrapper"></tree-view>
+        <tree-view :row="0" v-on:selection-changed="selectSubTree(0,$event)" :row-select="rowSelect" :group="groups" :blocks="blocks" :selected="rootSelect" class="wrapper"></tree-view>
+        <tree-view :row="index + 1" v-for="(group,index) in subGroups" :rowSelect="rowSelect" :key="group.block" v-on:selection-changed="selectSubTree(index + 1,$event)" :group="group.children" :blocks="blocks" :selected="group.selection" class="wrapper"></tree-view>
       </div>
       <div class="block-wrapper wrapper">
         <block-view :blocks="blocks"></block-view>
@@ -25,7 +25,8 @@ import treeView from './Config/TreeView.vue'
 export default {
   data: function () {
     return {
-      rootSelect: 1,
+      rowSelect: -1,
+      rootSelect: -1,
       blocks: [
         {
           id: 0,
@@ -73,6 +74,22 @@ export default {
               children: []
             }
           ]
+        },
+        {
+          selection: -1,
+          block: 2,
+          children: [
+            {
+              selection: 0,
+              block: 1,
+              children: []
+            },
+            {
+              selection: 0,
+              block: 2,
+              children: []
+            }
+          ]
         }
       ]
     }
@@ -90,6 +107,7 @@ export default {
       }
 
       var groups = []
+      // groups.push(this.groups)
       var current = this.groups[this.rootSelect]
       while (current !== undefined && current.children.length !== 0) {
         groups.push(current)
@@ -101,6 +119,7 @@ export default {
   },
   methods: {
     selectSubTree (groupID, blockID) {
+      this.rowSelect = groupID
       if (groupID === 0) {
         this.rootSelect = blockID
       } else {

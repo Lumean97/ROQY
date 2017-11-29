@@ -1,6 +1,6 @@
 <template>
   <div id="list-container" >
-    <div @click="select(index)" class="block-container" :class="{'selected' : isSelected(index)}" v-for="(block, index) in group" :key="block.id">
+    <div @click="select(index)" class="block-container" :class="{'selected' : isSelected(index), 'primary' : isPrimarySelection(index)}" v-for="(block, index) in group" :key="block.id">
       <span>{{blocks[block.block].title}}</span>
     </div>
   </div>
@@ -8,13 +8,16 @@
 
 <script>
 export default {
-  props: ['group', 'blocks', 'selected'],
+  props: ['group', 'row', 'blocks', 'selected', 'rowSelect'],
   methods: {
     isSelected (index) {
       return this.$props.selected === index
     },
     select (index) {
       this.$emit('selection-changed', index)
+    },
+    isPrimarySelection (index) {
+      return this.rowSelect === this.row
     }
   }
 }
@@ -39,5 +42,9 @@ export default {
 
   .selected {
      background-color: #eeeeee;
+  }
+
+  .selected.primary {
+    background-color: #cccccc;
   }
 </style>
