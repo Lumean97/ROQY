@@ -28,6 +28,7 @@ export default {
     height: 500px;
     width: 200px;
     display: inline-block;
+    vertical-align: top;
   }
   .block-container {
     height: 40px;
