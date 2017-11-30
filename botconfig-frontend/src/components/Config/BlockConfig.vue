@@ -4,7 +4,7 @@
     <h2>{{block.name}}</h2>
   </div>
   <div class='wrapper'>
-    <div class='question'>
+    <div class='question margin'>
     <div>
       <h4>{{$lang.translate.config.question}}</h4>
     </div>
@@ -16,20 +16,19 @@
     </div>
    
   </div>
-    
-     
-  <div class='answer'>
-    <div>
-      <label >{{$lang.translate.config.answer}}</label>
-    </div>
-    
-    <div class='block-wrapper'>
-      <ul  v-for="(answer,block) in block.answers">
-        <li>{{answer}}</li>
-      </ul>
-    </div>
+  <div class='answer margin'>
+        <div>
+            <h4 >{{$lang.translate.config.answer}}</h4>
+        </div>
+        
+        <div class='block-wrapper'>
+            <ul  v-for="(answer,block) in block.answers">
+                <li>{{answer}}</li>
+            </ul>
+        </div>
+   </div>
   </div>
-  </div>
+  
   
 </div>
   
@@ -62,18 +61,18 @@ export default {
 #blockConfig {
     width: 100%;
     height: 100%;
-    padding: 10px;
 }
 #header {
     width: 100%;
     padding: 5%;
     background-color: gray;
+    margin: 0;
 }
 #header>h2 {
     margin-left: 10%;
 }
 .wrapper {
-    padding: 5%;
+    padding: 2% 10%;
 }
 .block {
     
@@ -84,10 +83,16 @@ export default {
 .answer {
     width: 100%;
 }
+.margin {
+    margin-top: 6%;
+}
 .block-wrapper {
-    border: 2px solid red;
+    border: 2px solid gray;
     border-radius: 4px;
     padding: 2%;
+    margin-top: 1.5%;
+    min-height: 300px;
+    max-height: 300px;
 }
 ul {
     padding-left: 30px;
