@@ -1,43 +1,95 @@
 <template>
-  <div id="list-container" >
-    <div @click="select(index)" class="block-container" :class="{'selected' : isSelected(index)}" v-for="(block, index) in group" :key="block.id">
-      <span>{{blocks[block.block].title}}</span>
+<div id="blockConfig">
+  <div id="header">
+    <h2>{{block.name}}</h2>
+  </div>
+  <div class='wrapper'>
+    <div class='question'>
+    <div>
+      <h4>{{$lang.translate.config.question}}</h4>
+    </div>
+    
+    <div class='block-wrapper'>
+      <div class='block' v-for="(question,block) in block.questions">
+        <span>{{question}}</span>
+      </div>
+    </div>
+   
+  </div>
+    
+     
+  <div class='answer'>
+    <div>
+      <label >{{$lang.translate.config.answer}}</label>
+    </div>
+    
+    <div class='block-wrapper'>
+      <ul  v-for="(answer,block) in block.answers">
+        <li>{{answer}}</li>
+      </ul>
     </div>
   </div>
+  </div>
+  
+</div>
+  
 </template>
 
 <script>
 export default {
-  props: ['group', 'blocks', 'selected', 'select'],
-  methods: {
-    isSelected (index) {
-      console.log(index)
-      return this.$props.selected === index
-    },
-    select (index) {
-      this.$props.select(index)
+  name: 'blockConfig',
+  data () {
+    return {
+      block: {
+        name: 'Question',
+        questions: [
+          'I have a problem',
+          'I have a question'
+        ],
+        answers: [
+          'Weihnachteinkäufe',
+          'Versand & Zustellung',
+          'Rückgabe & Reklamation',
+          'Bezahlung & Rechnung'
+        ]
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-  #list-container {
-    height: 500px;
-    width: 200px;
-  }
-  .block-container {
-    height: 40px;
-    padding: 7px;
-    font-family: Roboto;
-    border-bottom: 1px #E0E0E0 solid;
-  }
-
-  .block-container:hover {
-    background-color: #f5f5f5;
-  }
-
-  .selected {
-     background-color: #eeeeee;
-  }
+#blockConfig {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+#header {
+    width: 100%;
+    padding: 5%;
+    background-color: gray;
+}
+#header>h2 {
+    margin-left: 10%;
+}
+.wrapper {
+    padding: 5%;
+}
+.block {
+    
+}
+.question {
+    width: 100%;
+}
+.answer {
+    width: 100%;
+}
+.block-wrapper {
+    border: 2px solid red;
+    border-radius: 4px;
+    padding: 2%;
+}
+ul {
+    padding-left: 30px;
+}
 </style>

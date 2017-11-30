@@ -10,7 +10,6 @@
     </div>
     <div class="block-config-wrapper wrapper">
       <block-config></block-config>
-      <p>Test</p>
     </div>
   </div>
 </template>
