@@ -50,6 +50,10 @@ module.exports = {
   },
   config: {
     question: 'Wenn der Benutzer etwas ähnlichea fragt:',
-    answer: 'Bot antwortet'
+    answer: 'Bot antwortet mit?',
+    add: 'Item hinzufügen...',
+    innerBox: 'Ist es einer von diesen?',
+    test: 'Test',
+    save: 'Speichern'
   }
 }
