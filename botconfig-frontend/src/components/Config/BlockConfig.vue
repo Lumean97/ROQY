@@ -63,6 +63,8 @@ export default {
         name: 'Question',
         questions: [
           'I have a problem',
+          'I have a question',
+          'I have a problem',
           'I have a question'
         ],
         answers: [
@@ -156,9 +158,6 @@ export default {
 }
 .margin {
   margin-top: 6%;
-}
-.margin {
-    margin-top: 6%;
 }
 .block-wrapper {
   border: 2px solid gray;
