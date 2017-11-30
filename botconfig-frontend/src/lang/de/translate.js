@@ -61,6 +61,8 @@ module.exports = {
     add: 'Item hinzufügen...',
     innerBox: 'Ist es einer von diesen?',
     test: 'Test',
-    save: 'Speichern'
+    save: 'Speichern',
+    question: 'Wenn der Benutzer etwas ähnlichea fragt:',
+    answer: 'Bot antwortet'
   }
 }

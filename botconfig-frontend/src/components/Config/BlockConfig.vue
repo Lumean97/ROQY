@@ -63,8 +63,6 @@ export default {
         name: 'Question',
         questions: [
           'I have a problem',
-          'I have a question',
-          'I have a problem',
           'I have a question'
         ],
         answers: [
