@@ -157,6 +157,9 @@ export default {
 .margin {
   margin-top: 6%;
 }
+.margin {
+    margin-top: 6%;
+}
 .block-wrapper {
   border: 2px solid gray;
   border-radius: 4px;
