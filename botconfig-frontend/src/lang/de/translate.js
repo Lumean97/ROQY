@@ -47,5 +47,9 @@ module.exports = {
     tittle: 'Anmelden',
     username: 'Benutzername',
     password: 'Kenntwort'
+  },
+  config: {
+    question: 'Wenn der Benutzer etwas ähnlichea fragt:',
+    answer: 'Bot antwortet'
   }
 }
