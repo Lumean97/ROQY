@@ -62,6 +62,8 @@ module.exports = {
     add: 'Add new item...',
     innerBox: 'Is it one of these?',
     test: 'Test',
-    save: 'Save'
+    save: 'Save',
+    question: 'If user says something similar to:',
+    answer: 'Bot replies'
   }
 }
