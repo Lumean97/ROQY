@@ -58,6 +58,10 @@ module.exports = {
     favoriteBlocks: 'Favorite Blocks',
     favoriteHint: 'Drag and Drop your favorite blocks into the bot structure',
     question: 'If user says something similar to:',
-    answer: 'Bot replies'
+    answer: 'Bot replies with?',
+    add: 'Add new item...',
+    innerBox: 'Is it one of these?',
+    test: 'Test',
+    save: 'Save'
   }
 }

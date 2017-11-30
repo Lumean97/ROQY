@@ -119,6 +119,7 @@ export default {
 #group-wrapper {
   height: 80%;
   padding: 25px;
+  overflow: auto;
 }
 
 .block-wrapper {
@@ -126,7 +127,7 @@ export default {
 }
 
 #leftside {
-  width: 60%;
+  width: 66%;
   height: 100%;
 }
 
