@@ -56,6 +56,8 @@ module.exports = {
   config: {
     unnamedBlock: 'Unnamed Block',
     favoriteBlocks: 'Favorite Blocks',
-    favoriteHint: 'Drag and Drop your favorite blocks into the bot structure'
+    favoriteHint: 'Drag and Drop your favorite blocks into the bot structure',
+    question: 'If user says something similar to:',
+    answer: 'Bot replies'
   }
 }

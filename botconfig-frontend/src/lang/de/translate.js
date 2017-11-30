@@ -56,6 +56,7 @@ module.exports = {
   config: {
     unnamedBlock: 'Unbennanter Block',
     favoriteBlocks: 'Block Favoriten',
-    favoriteHint: '[TODO: TRANSLATE]'
+    question: 'Wenn der Benutzer etwas ähnlichea fragt:',
+    answer: 'Bot antwortet'
   }
 }
