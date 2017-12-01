@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="block-config-wrapper wrapper">
-      <block-config></block-config>
+      <block-config v-on:saveData="saveData()"></block-config>
     </div>
   </div>
 </template>
@@ -106,6 +106,9 @@ export default {
         let parent = grandparent.children[grandparent.selection]
         parent.children.push({'block': block.id, 'selection': -1, 'children': []})
       }
+    },
+    saveData () {
+      this.$router.push('/bots')
     }
   }
 }

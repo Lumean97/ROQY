@@ -56,7 +56,7 @@ module.exports = {
   config: {
     unnamedBlock: 'Unbennanter Block',
     favoriteBlocks: 'Block Favoriten',
-    question: 'Wenn der Benutzer etwas ähnliches fragt:',
+    question: 'Wenn der Benutzer fragt:',
     answer: 'Bot antwortet mit?',
     add: 'Item hinzufügen...',
     innerBox: 'Ist es einer von diesen?',
