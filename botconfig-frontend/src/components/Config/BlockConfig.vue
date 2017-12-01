@@ -96,15 +96,19 @@ export default {
   },
   methods: {
     addNewBlock () {
-      this.block.questions.push(this.question)
-      this.question = ''
+      if (this.question !== '') {
+        this.block.questions.push(this.question)
+        this.question = ''
+      }
     },
     deleteQuestion (question) {
       this.block.questions.splice(this.block.questions.indexOf(question), 1)
     },
     addNewAnswer () {
-      this.block.answers.push(this.answer)
-      this.answer = ''
+      if (this.answer.length !== 0) {
+        this.block.answers.push(this.answer)
+        this.answer = ''
+      }
     }
   }
 }
