@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="block-config-wrapper wrapper">
-      <block-config></block-config>
+      <block-config v-on:saveData="saveData()"></block-config>
     </div>
   </div>
 </template>
@@ -123,6 +123,9 @@ export default {
       } else {
         this.subGroups[groupID].selection = blockID
       }
+    },
+    saveData () {
+      this.$router.push('/bots')
     }
   }
 }
