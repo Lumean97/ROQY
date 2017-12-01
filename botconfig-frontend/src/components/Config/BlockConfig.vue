@@ -4,7 +4,7 @@
     <div id="header">
       <div class='rightSite'>
         <button class="default-btn">{{$lang.translate.config.test}}</button>
-        <button class="default-btn">{{$lang.translate.config.save}}</button>
+        <button v-on:click='saveData()' class="default-btn">{{$lang.translate.config.save}}</button>
       </div>
       <h2>{{block.name}}</h2>
     </div>
@@ -109,6 +109,9 @@ export default {
         this.block.answers.push(this.answer)
         this.answer = ''
       }
+    },
+    saveData () {
+      this.$emit('saveData')
     }
   }
 }
