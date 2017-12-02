@@ -77,10 +77,21 @@ export default {
     */
     selectSubTree (groupID, blockID) {
       this.rowSelect = groupID
+      var selection = null
       if (groupID === 0) {
         this.rootSelect = blockID
+        selection = this.groups[this.rootSelect]
       } else {
-        this.subGroups[groupID].selection = blockID
+        var group = this.subGroups[groupID]
+        group.selection = blockID
+        if (group.selection !== -1 && group.children.length !== 0) {
+          selection = group.children[group.selection]
+        }
+      }
+
+      // Clear selection of child node
+      if (selection !== null) {
+        selection.selection = -1
       }
     },
     /**
@@ -90,12 +101,10 @@ export default {
       let block = {title: this.$lang.translate.config.unnamedBlock, id: this.blockIDCount++, isFavorite: false}
       this.blocks.push(block)
       if (groupID === 0) {
-        console.log('new root block')
         this.groups.push({'block': block.id, 'selection': -1, 'children': []})
       } else {
         let grandparent = this.subGroups[groupID - 1]
         let parent = grandparent.children[grandparent.selection]
-        console.log(parent)
         parent.children.push({'block': block.id, 'selection': -1, 'children': []})
       }
     }
