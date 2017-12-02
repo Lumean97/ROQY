@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="block-config-wrapper wrapper">
-      <block-config v-on:saveData="saveData()"></block-config>
+      <block-config v-on:setTitle="setBlockTitle($event)" v-on:saveData="saveData()" :block1="selectedBlock"></block-config>
     </div>
   </div>
 </template>
@@ -73,6 +73,17 @@ export default {
      */
     defaultTitle () {
       return this.$lang.translate.config.unnamedBlock
+    },
+    /**
+     * Return the currently selected block or null if there is no selected block
+     */
+    selectedBlock () {
+      if (this.rowSelect === -1 || this.subGroups[this.rowSelect].selection === -1) {
+        return null
+      }
+
+      let select = this.subGroups[this.rowSelect].selection
+      return this.getBlock(this.subGroups[this.rowSelect].children[select].block)
     }
   },
   methods: {
@@ -134,6 +145,15 @@ export default {
       let block = this.getBlock(blockID)
       if (block !== null) {
         block.isFavorite = setFavorite
+      }
+    },
+    /**
+     * Changes a blocks title
+     */
+    setBlockTitle (blockID, title) {
+      let block = this.getBlock(blockID)
+      if (block !== null) {
+        block.title = title
       }
     },
     saveData () {
