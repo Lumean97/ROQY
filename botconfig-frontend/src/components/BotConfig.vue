@@ -25,74 +25,10 @@ export default {
   data: function () {
     return {
       rowSelect: -1,
-      rootSelect: 2,
-      blockIDCount: 3,
-      blocks: [
-        {
-          id: 0,
-          title: 'Geschenkbestellung',
-          isFavorite: true
-        },
-        {
-          id: 1,
-          title: 'Rechtzeitige Lieferung'
-        },
-        {
-          id: 2,
-          title: 'Rückgabe & Reklamation'
-        }
-      ],
-      groups: [
-        {
-          selection: 0,
-          block: 1,
-          children: [
-            {
-              selection: 0,
-              block: 0,
-              children: [
-                {
-                  selection: 0,
-                  block: 2,
-                  children: []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          selection: 0,
-          block: 2,
-          children: [
-            {
-              selection: 0,
-              block: 1,
-              children: []
-            },
-            {
-              selection: 0,
-              block: 2,
-              children: []
-            }
-          ]
-        },
-        {
-          selection: -1,
-          block: 2,
-          children: [
-            {
-              selection: 0,
-              block: 1,
-              children: []
-            },
-            {
-              selection: 0,
-              block: 2,
-              children: []
-            }
-          ]
-        }
-      ]
+      rootSelect: -1,
+      blockIDCount: 0,
+      blocks: [ ],
+      groups: [ ]
     }
   },
   components: {
@@ -103,15 +39,19 @@ export default {
      * Returns all groups that are currently selected in the tree
      */
     subGroups () {
-      if (this.groups.length === 0) {
-        return []
-      }
-
       let groups = []
       let current = {'block': -1, 'selection': this.rootSelect, 'children': this.groups}
+
       while (current !== undefined && current.children.length !== 0) {
         groups.push(current)
+        if (current.selection === -1) {
+          break
+        }
         current = current.children[current.selection]
+      }
+
+      if (current.children.length === 0) {
+        groups.push({'block': -1, 'selection': -1, 'children': []})
       }
 
       return groups
@@ -147,9 +87,17 @@ export default {
     * Adds a new block to row defined by groupID
     */
     addNewBlock (groupID) {
-      let block = {title: this.$lang.translate.config.unnamedBlock, id: this.blockIDCount++}
-      console.log(block)
+      let block = {title: this.$lang.translate.config.unnamedBlock, id: this.blockIDCount++, isFavorite: false}
       this.blocks.push(block)
+      if (groupID === 0) {
+        console.log('new root block')
+        this.groups.push({'block': block.id, 'selection': -1, 'children': []})
+      } else {
+        let grandparent = this.subGroups[groupID - 1]
+        let parent = grandparent.children[grandparent.selection]
+        console.log(parent)
+        parent.children.push({'block': block.id, 'selection': -1, 'children': []})
+      }
     }
   }
 }
