@@ -67,6 +67,12 @@ export default {
       })
 
       return favs
+    },
+    /**
+     * Workaround for translate not working in tests. Used to stub the translation.
+     */
+    defaultTitle () {
+      return this.$lang.translate.config.unnamedBlock
     }
   },
   methods: {
@@ -94,10 +100,10 @@ export default {
       }
     },
     /**
-    * Adds a new block to row defined by groupID
+    * Adds a new block to row defined by groupID and returns its new id
     */
     addNewBlock (groupID) {
-      let block = {title: this.$lang.translate.config.unnamedBlock, id: this.blockIDCount++, isFavorite: false}
+      let block = {title: this.defaultTitle, id: this.blockIDCount++, isFavorite: false}
       this.blocks.push(block)
       if (groupID === 0) {
         this.groups.push({'block': block.id, 'selection': -1, 'children': []})
@@ -105,6 +111,29 @@ export default {
         let grandparent = this.subGroups[groupID - 1]
         let parent = grandparent.children[grandparent.selection]
         parent.children.push({'block': block.id, 'selection': -1, 'children': []})
+      }
+
+      return block.id
+    },
+    /**
+     * Returns the block with the given blockID or null if not found
+     */
+    getBlock (blockID) {
+      for (const block of this.blocks) {
+        if (block.id === blockID) {
+          return block
+        }
+      }
+
+      return null
+    },
+    /*
+     * Adds the block to favorites
+     */
+    favoriteBlock (blockID, setFavorite = true) {
+      let block = this.getBlock(blockID)
+      if (block !== null) {
+        block.isFavorite = setFavorite
       }
     },
     saveData () {
