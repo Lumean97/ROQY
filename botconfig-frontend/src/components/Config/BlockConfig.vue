@@ -6,7 +6,7 @@
         <button class="default-btn">{{$lang.translate.config.test}}</button>
         <button v-on:click='saveData()' class="default-btn">{{$lang.translate.config.save}}</button>
       </div>
-      <h2>{{block.name}}</h2>
+      <h2>{{block1.title}}</h2>
     </div>
 
     <div class='wrapper'>
@@ -57,10 +57,10 @@
 <script>
 export default {
   name: 'blockConfig',
+  props: ['block1'],
   data () {
     return {
       block: {
-        name: 'Question',
         questions: [
           'I have a problem',
           'I have a question',
