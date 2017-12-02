@@ -5,7 +5,7 @@
         <tree-view :row="index" v-for="(group,index) in subGroups" :rowSelect="rowSelect" :key="group.block" v-on:selection-changed="selectSubTree(index,$event)" v-on:addNew="addNewBlock(index)" :group="group.children" :blocks="blocks" :selected="group.selection" class="wrapper"></tree-view>
       </div>
       <div class="block-wrapper wrapper">
-        <block-view :blocks="blocks"></block-view>
+        <block-view :blocks="favorites"></block-view>
       </div>
     </div>
     <div class="block-config-wrapper wrapper">
@@ -30,7 +30,8 @@ export default {
       blocks: [
         {
           id: 0,
-          title: 'Geschenkbestellung'
+          title: 'Geschenkbestellung',
+          isFavorite: true
         },
         {
           id: 1,
@@ -106,26 +107,45 @@ export default {
         return []
       }
 
-      var groups = []
-      var current = {'block': -1, 'selection': this.rootSelect, 'children': this.groups}
+      let groups = []
+      let current = {'block': -1, 'selection': this.rootSelect, 'children': this.groups}
       while (current !== undefined && current.children.length !== 0) {
         groups.push(current)
         current = current.children[current.selection]
       }
 
       return groups
+    },
+    /**
+    * Return all blocks that are marked as favorites
+    */
+    favorites () {
+      let favs = []
+      this.blocks.forEach(block => {
+        if (block.isFavorite === true) {
+          favs.push(block)
+        }
+      })
+
+      return favs
     }
   },
   methods: {
+
+    /**
+    * Selects a node in the tree where groupID is the row and blockID the column
+    */
     selectSubTree (groupID, blockID) {
       this.rowSelect = groupID
       if (groupID === 0) {
-        console.log('set root selection : ' + groupID)
         this.rootSelect = blockID
       } else {
         this.subGroups[groupID].selection = blockID
       }
     },
+    /**
+    * Adds a new block to row defined by groupID
+    */
     addNewBlock (groupID) {
       let block = {title: this.$lang.translate.config.unnamedBlock, id: this.blockIDCount++}
       console.log(block)

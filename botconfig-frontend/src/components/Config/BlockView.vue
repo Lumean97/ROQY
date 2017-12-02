@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="button-wrapper">
-      <button class="default-btn">new block</button>
-      <button class="default-btn">new group</button>
+    <div class="header-wrapper">
+      <h2>{{$lang.translate.config.favoriteBlocks}}</h2>
+      <h4>{{$lang.translate.config.favoriteHint}}</h4>
     </div>
     <div class="blockBubble" v-for="(block, blocks) in blocks" :key="block.id">
       <span>{{block.title}}</span>
@@ -32,10 +32,10 @@ export default {
     padding: 0;
   }
 
-  .button-wrapper {
+  .header-wrapper {
     width: 100%;
-    display: flex;
-    flex-direction: row-reverse;
+    padding: 5px;
+    margin: 5px;
   }
 
   .default-btn {

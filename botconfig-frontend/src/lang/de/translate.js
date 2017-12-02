@@ -54,6 +54,8 @@ module.exports = {
     delete: 'löschen'
   },
   config: {
-    unnamedBlock: 'Unbennanter Block'
+    unnamedBlock: 'Unbennanter Block',
+    favoriteBlocks: 'Block Favoriten',
+    favoriteHint: '[TODO: TRANSLATE]'
   }
 }
