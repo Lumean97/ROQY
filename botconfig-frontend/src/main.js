@@ -6,7 +6,7 @@ import router from './router'
 import vueMaterial from 'vue-material'
 
 import {store} from './store'
-var lang = require('vuejs-localization')
+import lang from 'vuejs-localization'
 lang.requireAll(require.context('./lang', true, /\.js$/))
 
 Vue.use(vueMaterial)
