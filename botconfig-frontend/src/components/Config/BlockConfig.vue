@@ -24,7 +24,7 @@
               </md-button>
           </div>
           <div>
-              <input v-model='question' :placeholder='$lang.translate.config.add' name='newBlock' @keyup.enter='addNewBlock()'/>
+              <input v-model='question' :placeholder='$lang.translate.config.add' name='newBlock' @keyup.enter='addNewQuestion()'/>
           </div>
         </div>
       </div>
@@ -63,18 +63,18 @@ export default {
     }
   },
   methods: {
-    addNewBlock () {
+    addNewQuestion () {
       if (this.question !== '') {
-        this.$emit()
+        this.$emit('newQuestion', this.question)
         this.question = ''
       }
     },
     deleteQuestion (question) {
-      this.block.questions.splice(this.block.questions.indexOf(question), 1)
+      this.$emit('deleteQuestion', question)
     },
     addNewAnswer () {
       if (this.answer.length !== 0) {
-        this.block.answers.push(this.answer)
+        this.$emit('newAnswer', this.answer)
         this.answer = ''
       }
     },
