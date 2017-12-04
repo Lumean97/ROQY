@@ -59,7 +59,6 @@ module.exports = {
     question: 'Wenn der Benutzer fragt:',
     answer: 'Bot antwortet mit?',
     add: 'Item hinzufügen...',
-    innerBox: 'Ist es einer von diesen?',
     test: 'Test',
     save: 'Speichern'
   }
