@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="block-config-wrapper wrapper">
-      <block-config v-on:setTitle="setBlockTitle($event)" v-on:saveData="saveData()" :block1="selectedBlock"></block-config>
+      <block-config v-on:setTitle="setBlockTitle($event)" v-on:saveData="saveData()" :block="selectedBlock"></block-config>
     </div>
   </div>
 </template>
@@ -114,7 +114,7 @@ export default {
     * Adds a new block to row defined by groupID and returns its new id
     */
     addNewBlock (groupID) {
-      let block = {title: this.defaultTitle, id: this.blockIDCount++, isFavorite: false}
+      let block = {title: this.defaultTitle, id: this.blockIDCount++, isFavorite: false, questions: [], answers: []}
       this.blocks.push(block)
       if (groupID === 0) {
         this.groups.push({'block': block.id, 'selection': -1, 'children': []})

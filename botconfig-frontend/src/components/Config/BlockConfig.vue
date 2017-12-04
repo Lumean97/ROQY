@@ -1,12 +1,12 @@
 <template>
-  <div id="blockConfig">
+  <div v-if="isBlockSelected" id="blockConfig">
 
     <div id="header">
       <div class='rightSite'>
         <button class="default-btn">{{$lang.translate.config.test}}</button>
         <button v-on:click='saveData()' class="default-btn">{{$lang.translate.config.save}}</button>
       </div>
-      <h2>{{block1.title}}</h2>
+      <h2>{{block.title}}</h2>
     </div>
 
     <div class='wrapper'>
@@ -17,7 +17,7 @@
       
       <div class='row'>
         <div class='block-wrapper'>
-          <div class='block' v-for="(question,block) in block.questions">
+          <div class='block' v-for="(question,index) in block.questions" :key="index">
               <span>{{question}}</span>
               <md-button  class="md-icon-button  md-mini md-dense" v-on:click='deleteQuestion(question)'>
                 <md-icon>delete</md-icon>
@@ -40,7 +40,7 @@
           <span>{{$lang.translate.config.innerBox}}</span>
         </div>
         <ol>
-          <li v-for="(answer,block) in block.answers">{{answer}}</li>
+          <li v-for="(answer,index) in block.answers" :key="index">{{answer}}</li>
         </ol>
         <div>
           <input v-model='answer' :placeholder='$lang.translate.config.add' name='newBlock' @keyup.enter='addNewAnswer()'/>
@@ -48,8 +48,6 @@
       </div>
       </div>
     </div>
-
-
   </div>
 
 </template>
@@ -57,39 +55,9 @@
 <script>
 export default {
   name: 'blockConfig',
-  props: ['block1'],
+  props: ['block'],
   data () {
     return {
-      block: {
-        questions: [
-          'I have a problem',
-          'I have a question',
-          'I have a problem',
-          'I have a question'
-        ],
-        answers: [
-          'Weihnachteinkäufe',
-          'Versand & Zustellung',
-          'Rückgabe & Reklamation',
-          'Bezahlung & Rechnung',
-          'Weihnachteinkäufe',
-          'Weihnachteinkäufe',
-          'Versand & Zustellung',
-          'Rückgabe & Reklamation',
-          'Bezahlung & Rechnung',
-          'Weihnachteinkäufe',
-          'Weihnachteinkäufe',
-          'Versand & Zustellung',
-          'Rückgabe & Reklamation',
-          'Bezahlung & Rechnung',
-          'Weihnachteinkäufe',
-          'Weihnachteinkäufe',
-          'Versand & Zustellung',
-          'Rückgabe & Reklamation',
-          'Bezahlung & Rechnung',
-          'Weihnachteinkäufe'
-        ]
-      },
       question: '',
       answer: ''
     }
@@ -97,7 +65,7 @@ export default {
   methods: {
     addNewBlock () {
       if (this.question !== '') {
-        this.block.questions.push(this.question)
+        this.$emit()
         this.question = ''
       }
     },
@@ -112,6 +80,11 @@ export default {
     },
     saveData () {
       this.$emit('saveData')
+    }
+  },
+  computed: {
+    isBlockSelected () {
+      return this.block !== undefined && this.block !== null
     }
   }
 }
