@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="block-config-wrapper wrapper">
-      <block-config v-on:saveData="saveData()"></block-config>
+      <block-config v-on:saveData="saveData()" v-on:testBot="testBot()"></block-config>
     </div>
   </div>
 </template>
@@ -126,6 +126,12 @@ export default {
     },
     saveData () {
       this.$router.push('/bots')
+    },
+    testBot () {
+      this.saveDataToState()
+      this.$router.push('/test')
+    },
+    saveDataToState () {
     }
   }
 }

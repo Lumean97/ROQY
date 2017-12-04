@@ -3,7 +3,7 @@
 
     <div id="header">
       <div class='rightSite'>
-        <button class="default-btn">{{$lang.translate.config.test}}</button>
+        <button @click='testBot()'class="default-btn">{{$lang.translate.config.test}}</button>
         <button v-on:click='saveData()' class="default-btn">{{$lang.translate.config.save}}</button>
       </div>
       <h2>{{block.name}}</h2>
@@ -112,6 +112,9 @@ export default {
     },
     saveData () {
       this.$emit('saveData')
+    },
+    testBot () {
+      this.$emit('testBot')
     }
   }
 }
@@ -195,8 +198,8 @@ input :focus {
 .default-btn {
   background-color: orange;
   border-radius: 16px;
-  padding: 2% 6%;
-  margin-bottom:1%;
+  padding: 2px 4px;
+  margin-bottom:3px;
   color: white;
   font-family: Roboto;
   font-size: 14px;
