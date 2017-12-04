@@ -36,15 +36,7 @@
       </div>
       
       <div class='block-wrapper'>
-        <div class='innerQuestion'>
-          <span>{{$lang.translate.config.innerBox}}</span>
-        </div>
-        <ol>
-          <li v-for="(answer,index) in block.answers" :key="index">{{answer}}</li>
-        </ol>
-        <div>
-          <input v-model='answer' :placeholder='$lang.translate.config.add' name='newBlock' @keyup.enter='addNewAnswer()'/>
-        </div>
+        <textarea v-model="answer"></textarea>
       </div>
       </div>
     </div>
@@ -58,8 +50,7 @@ export default {
   props: ['block'],
   data () {
     return {
-      question: '',
-      answer: ''
+      question: ''
     }
   },
   methods: {
@@ -85,6 +76,14 @@ export default {
   computed: {
     isBlockSelected () {
       return this.block !== undefined && this.block !== null
+    },
+    answer: {
+      get () {
+        return this.block.answer
+      },
+      set (answer) {
+        this.$emit('setAnswer', answer)
+      }
     }
   }
 }

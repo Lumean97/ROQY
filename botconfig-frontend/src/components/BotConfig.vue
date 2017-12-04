@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="block-config-wrapper wrapper">
-      <block-config v-on:setTitle="setBlockTitle($event)" v-on:saveData="saveData()" :block="selectedBlock"></block-config>
+      <block-config v-on:setTitle="setBlockTitle($event)" v-on:newQuestion="blockAddQuestion(selectedBlock.id,$event)" v-on:setAnswer="setAnswer(selectedBlock.id,$event)" v-on:deleteQuestion="blockRemoveQuestion(selectedBlock.id,$event)" v-on:saveData="saveData()" :block="selectedBlock"></block-config>
     </div>
   </div>
 </template>
@@ -114,7 +114,7 @@ export default {
     * Adds a new block to row defined by groupID and returns its new id
     */
     addNewBlock (groupID) {
-      let block = {title: this.defaultTitle, id: this.blockIDCount++, isFavorite: false, questions: [], answers: []}
+      let block = {title: this.defaultTitle, id: this.blockIDCount++, isFavorite: false, questions: [], answer: ''}
       this.blocks.push(block)
       if (groupID === 0) {
         this.groups.push({'block': block.id, 'selection': -1, 'children': []})
@@ -154,6 +154,41 @@ export default {
       let block = this.getBlock(blockID)
       if (block !== null) {
         block.title = title
+      }
+    },
+    /**
+     * Adds a new question to the block
+     */
+    blockAddQuestion (blockID, question) {
+      let block = this.getBlock(blockID)
+      if (block !== null) {
+        for (const q of block.questions) {
+          if (q === question) {
+            return
+          }
+        }
+        block.questions.push(question)
+      }
+    },
+    /**
+     * Remove a question from the block
+     */
+    blockRemoveQuestion (blockID, question) {
+      let block = this.getBlock(blockID)
+      if (block !== null) {
+        let i = block.questions.indexOf(question)
+        if (i !== -1) {
+          block.questions.splice(i, 1)
+        }
+      }
+    },
+    /**
+     * Changes the answer of the current block
+     */
+    setAnswer (blockID, answer) {
+      let block = this.getBlock(blockID)
+      if (block !== null) {
+        block.answer = answer
       }
     },
     saveData () {
