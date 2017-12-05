@@ -2,10 +2,13 @@
   <div v-if="isBlockSelected" id="blockConfig">
 
     <div id="header">
-
+      <div>
+        <button v-on:click="favoriteBot()" class="default-btn">{{$lang.translate.config.favorite}}</button>
+         <button v-on:click="deleteBot()" class="default-btn">{{$lang.translate.config.delete}}</button>
+      </div>
       <div class='rightSite'>
-        <button v-on:click='testBot()' class="default-btn">{{$lang.translate.config.test}}</button>
-        <button v-on:click='saveData()' class="default-btn">{{$lang.translate.config.save}}</button>
+        <button v-on:click="testBot()" class="default-btn">{{$lang.translate.config.test}}</button>
+        <button v-on:click="saveData()" class="default-btn">{{$lang.translate.config.save}}</button>
       </div>
       <input v-model="title"></input>
     </div>
@@ -75,6 +78,12 @@ export default {
     },
     testBot () {
       this.$emit('testBot')
+    },
+    favoriteBot () {
+      this.$emit('favorite')
+    },
+    deleteBot () {
+      this.$emit('delete')
     }
   },
   computed: {

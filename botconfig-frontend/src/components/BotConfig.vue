@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="block-config-wrapper wrapper">
-      <block-config v-on:setTitle="setBlockTitle(selectedBlock.id, $event)" v-on:newQuestion="blockAddQuestion(selectedBlock.id, $event)" v-on:setAnswer="setAnswer(selectedBlock.id,$event)" v-on:deleteQuestion="blockRemoveQuestion(selectedBlock.id,$event)" v-on:saveData="saveData()" v-on:testBot="testBot()" :block="selectedBlock"></block-config>
+      <block-config v-on:setTitle="setBlockTitle(selectedBlock.id, $event)" v-on:newQuestion="blockAddQuestion(selectedBlock.id, $event)" v-on:setAnswer="setAnswer(selectedBlock.id,$event)" v-on:deleteQuestion="blockRemoveQuestion(selectedBlock.id,$event)" v-on:favorite="favoriteBlock(selectedBlock.id)" v-on:delete="deleteSelected()" v-on:saveData="saveData()" v-on:testBot="testBot()" :block="selectedBlock"></block-config>
     </div>
   </div>
 </template>
@@ -127,6 +127,26 @@ export default {
       }
 
       return block.id
+    },
+    /**
+     * Removes a block
+     */
+    removeBlock (groupID, index) {
+      // TODO : Destroy all Orphans (or just delete them)
+      if (groupID === 0) {
+        this.rootSelect = Math.min(this.rootSelect, index - 1)
+        this.groups.splice(index, 1)
+      } else {
+        this.subGroups[groupID].selection = Math.min(this.subGroups[groupID].selection, index - 1)
+        this.subGroups[groupID].children.splice(index, 1)
+      }
+    },
+    /**
+     * Removes the currently select block
+     */
+    deleteSelected () {
+      let select = this.subGroups[this.rowSelect].selection
+      this.removeBlock(this.rowSelect, select)
     },
     /**
      * Returns the block with the given blockID or null if not found
