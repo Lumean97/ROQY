@@ -2,11 +2,12 @@
   <div v-if="isBlockSelected" id="blockConfig">
 
     <div id="header">
+
       <div class='rightSite'>
         <button v-on:click='testBot()' class="default-btn">{{$lang.translate.config.test}}</button>
         <button v-on:click='saveData()' class="default-btn">{{$lang.translate.config.save}}</button>
       </div>
-      <h2>{{block.title}}</h2>
+      <input v-model="title"></input>
     </div>
 
     <div class='wrapper'>
@@ -86,6 +87,14 @@ export default {
       },
       set (answer) {
         this.$emit('setAnswer', answer)
+      }
+    },
+    title: {
+      get () {
+        return this.block.title
+      },
+      set (title) {
+        this.$emit('setTitle', title)
       }
     }
   }

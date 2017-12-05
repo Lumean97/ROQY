@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="block-config-wrapper wrapper">
-      <block-config v-on:setTitle="setBlockTitle($event)" v-on:newQuestion="blockAddQuestion(selectedBlock.id,$event)" v-on:setAnswer="setAnswer(selectedBlock.id,$event)" v-on:deleteQuestion="blockRemoveQuestion(selectedBlock.id,$event)" v-on:saveData="saveData()" v-on:testBot="testBot()" :block="selectedBlock"></block-config>
+      <block-config v-on:setTitle="setBlockTitle(selectedBlock.id, $event)" v-on:newQuestion="blockAddQuestion(selectedBlock.id, $event)" v-on:setAnswer="setAnswer(selectedBlock.id,$event)" v-on:deleteQuestion="blockRemoveQuestion(selectedBlock.id,$event)" v-on:saveData="saveData()" v-on:testBot="testBot()" :block="selectedBlock"></block-config>
     </div>
   </div>
 </template>
