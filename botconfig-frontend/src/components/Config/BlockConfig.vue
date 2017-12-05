@@ -3,7 +3,7 @@
 
     <div id="header">
       <div class='rightSite'>
-        <button class="default-btn">{{$lang.translate.config.test}}</button>
+        <button v-on:click='testBot()' class="default-btn">{{$lang.translate.config.test}}</button>
         <button v-on:click='saveData()' class="default-btn">{{$lang.translate.config.save}}</button>
       </div>
       <h2>{{block.title}}</h2>
@@ -71,6 +71,9 @@ export default {
     },
     saveData () {
       this.$emit('saveData')
+    },
+    testBot () {
+      this.$emit('testBot')
     }
   },
   computed: {

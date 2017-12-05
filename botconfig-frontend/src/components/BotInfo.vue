@@ -19,7 +19,7 @@
               <md-menu-item id="confirm" v-on:click="openDialog(confirm.ref1)">
                 <span >{{$lang.translate.info.delete}}</span>            
               </md-menu-item>
-              <router-link tag="md-menu-item"   :to="{ path: '/config/bot', query: { id: botData._id }}">
+              <router-link v-if="botData.id" tag="md-menu-item" :to="{ name: 'config', params: {id: botData.id}}">
                 <span>{{$lang.translate.info.setting}}</span>
               </router-link>
             </md-menu-content>

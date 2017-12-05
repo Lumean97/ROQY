@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="block-config-wrapper wrapper">
-      <block-config v-on:setTitle="setBlockTitle($event)" v-on:newQuestion="blockAddQuestion(selectedBlock.id,$event)" v-on:setAnswer="setAnswer(selectedBlock.id,$event)" v-on:deleteQuestion="blockRemoveQuestion(selectedBlock.id,$event)" v-on:saveData="saveData()" :block="selectedBlock"></block-config>
+      <block-config v-on:setTitle="setBlockTitle($event)" v-on:newQuestion="blockAddQuestion(selectedBlock.id,$event)" v-on:setAnswer="setAnswer(selectedBlock.id,$event)" v-on:deleteQuestion="blockRemoveQuestion(selectedBlock.id,$event)" v-on:saveData="saveData()" v-on:testBot="testBot()" :block="selectedBlock"></block-config>
     </div>
   </div>
 </template>
@@ -19,8 +19,10 @@ import 'vue-material/dist/vue-material.css'
 import blockConfig from './Config/BlockConfig.vue'
 import blockView from './Config/BlockView.vue'
 import treeView from './Config/TreeView.vue'
+import axios from 'axios'
 
 export default {
+  props: ['id'],
   data: function () {
     return {
       rowSelect: -1,
@@ -209,9 +211,9 @@ export default {
       }
     },
     /**
-     * Save the config to json string
+     * Save the config to json string. Routes to bot overview or test if gotoTest is true.
      */
-    saveConfig () {
+    saveConfig (gotoTest = false) {
       let saveObj =
         {
           rowSelect: this.rowSelect,
@@ -220,10 +222,36 @@ export default {
           groups: this.groups
         }
 
-      return JSON.stringify(saveObj)
+      let conf = JSON.stringify(saveObj)
+      console.log(conf)
+      axios.put(
+        '/bot/' + this.id + '/config/',
+        conf,
+        {
+          headers: {Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'}
+        })
+        .then(() => {
+          if (gotoTest) {
+            this.$router.push('/bots')
+          } else {
+            this.$router.push({name: 'test', params: {id: this.id}})
+          }
+        })
+        .catch(() => {
+          alert('Failed to upload your bot. Please try again.')
+        })
     },
+    /**
+     * Save config event handler
+     */
     saveData () {
-      console.log(this.saveConfig())
+      this.saveConfig()
+    },
+    /**
+     * Test bot event handler
+     */
+    testBot () {
+      this.saveConfig(true)
     }
   }
 }

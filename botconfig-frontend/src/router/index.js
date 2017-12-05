@@ -39,10 +39,12 @@ export default new Router({
       beforeEnter: requireAuth
     },
     {
-      path: '/config/bot/',
+      path: '/bot/:id/config/',
       name: 'config',
       component: config,
-      beforeEnter: requireAuth
+      beforeEnter: requireAuth,
+      props: true
+
     },
     {
       path: '/',
