@@ -191,8 +191,39 @@ export default {
         block.answer = answer
       }
     },
+    /**
+     * Load the config data from a json string
+     */
+    loadConfig (string) {
+      let json = JSON.parse(string)
+      this.rowSelect = json.rowSelect
+      this.rootSelect = json.rootSelect
+      this.blocks = json.blocks
+      this.groups = json.groups
+
+      let highestID = 0
+      for (const block of json.blocks) {
+        if (block.id > highestID) {
+          highestID = block.id
+        }
+      }
+    },
+    /**
+     * Save the config to json string
+     */
+    saveConfig () {
+      let saveObj =
+        {
+          rowSelect: this.rowSelect,
+          rootSelect: this.rootSelect,
+          block: this.blocks,
+          groups: this.groups
+        }
+
+      return JSON.stringify(saveObj)
+    },
     saveData () {
-      this.$router.push('/bots')
+      console.log(this.saveConfig())
     }
   }
 }
