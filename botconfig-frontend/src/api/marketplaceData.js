@@ -17,7 +17,7 @@ export default {
   },
   addNewMarketplace (cb, bot) {
     setTimeout(function () {
-      axios.put('/bot/:' + bot.id + '/privacy', {
+      axios.put('/bot/' + bot.id + '/privacy', {
         'name': bot.name,
         'description': bot.description,
         'intents': [],

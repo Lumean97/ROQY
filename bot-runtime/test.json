@@ -1,0 +1,52 @@
+{
+	"subscriptionId": "e617054e-e72a-42c4-aab9-2ab74f4cf564",
+	"changes": [{
+		"type": "UPSERT",
+		"result": {
+			"convId": "7cc629c4-6ed3-4272-b75f-eda41cb31a66",
+			"conversationDetails": {
+				"skillId": "-1",
+				"participants": [{
+					"id": "087e17a5-e499-4677-9326-abdf1870bde9",
+					"role": "CONSUMER"
+				}, {
+					"id": "1c8b42b9-2ec0-5c71-b64b-1aaa661ca505",
+					"role": "MANAGER"
+				}],
+				"state": "OPEN",
+				"startTs": 1511217266794,
+				"metaDataLastUpdateTs": 1511217266840,
+				"firstConversation": false,
+				"ttr": {
+					"ttrType": "NORMAL",
+					"value": 3600
+				},
+				"__myRole": "MANAGER"
+			},
+			"lastContentEventNotification": {
+				"sequence": 3,
+				"originatorClientProperties": {
+					"type": ".ClientProperties",
+					"ipAddress": "10.42.138.109"
+				},
+				"originatorId": "23625217.993079632",
+				"originatorPId": "1c8b42b9-2ec0-5c71-b64b-1aaa661ca505",
+				"originatorMetadata": {
+					"id": "1c8b42b9-2ec0-5c71-b64b-1aaa661ca505",
+					"role": "MANAGER",
+					"clientProperties": {
+						"type": ".ClientProperties",
+						"ipAddress": "10.42.138.109"
+					}
+				},
+				"serverTimestamp": 1511217297497,
+				"event": {
+					"type": "ContentEvent",
+					"message": "I think, it is very good!",
+					"contentType": "text/plain"
+				},
+				"dialogId": "7cc629c4-6ed3-4272-b75f-eda41cb31a66"
+			}
+		}
+	}]
+}

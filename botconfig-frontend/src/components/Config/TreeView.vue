@@ -4,7 +4,7 @@
       <span>{{blocks[block.block].title}}</span>
     </div>
     <div v-if="hasNewButton()" @click="addNew()" class="block-container">
-      <span style="color: green;">New block</span>
+      <span class="newText">New block</span>
     </div>
   </div>
 </template>
@@ -56,5 +56,9 @@ export default {
 
   .selected.primary {
     background-color: #cccccc;
+  }
+
+  .newText {
+    color: orange;
   }
 </style>

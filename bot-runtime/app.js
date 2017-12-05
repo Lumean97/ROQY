@@ -1,5 +1,6 @@
+
+
 const runtime = require('./modules/runtime');
+let id = process.env.BOT_ID;
+setTimeout(() => runtime.start(id), 1000);
 
-let id = process.env.BOT_ID || 0;
-
-runtime.start(id);

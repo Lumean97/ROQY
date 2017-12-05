@@ -8,6 +8,9 @@
   },
   "author": "",
   "dependencies": {
-    "mongodb": "^2.2.33"
+    "dotenv": "^4.0.0",
+    "luis-node-sdk": "^1.0.0",
+    "mongodb": "^2.2.33",
+    "node-agent-sdk": "^0.2.20"
   }
 }

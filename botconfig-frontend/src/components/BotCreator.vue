@@ -132,7 +132,7 @@ export default {
 </script>
 <style scoped>
   #creator {
-    width: 70%;
+    width: 60%;
     margin: auto;
   }
   .header {
@@ -232,19 +232,19 @@ export default {
     cursor: pointer;
     width: 90px;
   }
-  @media only screen and (max-width: 650px) {
-  .card-wraper {
-    display: inline;
-    min-width: 33%;
-    max-height: 250px;
-    min-height: 250px;
-    max-width: 33%;
-  }
-  .card {
-    min-width: 32%;
-    max-height: 220px;
-    min-height: 220px;
-    max-width: 32%;
-  }
+  @media only screen and (max-width: 800px) {
+    .card-wraper {
+      display: inline;
+      min-width: 33%;
+      max-height: 250px;
+      min-height: 250px;
+      max-width: 33%;
+    }
+    .card {
+      min-width: 32%;
+      max-height: 220px;
+      min-height: 220px;
+      max-width: 32%;
+    }
   }
 </style>

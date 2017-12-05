@@ -61,6 +61,8 @@ module.exports = {
     answer: 'Bot replies with?',
     add: 'Add new item...',
     test: 'Test',
-    save: 'Save'
+    save: 'Save',
+    favorite: 'favorite',
+    delete: 'delete'
   }
 }

@@ -40,9 +40,18 @@ export default {
       this.$lang.setLang(lg)
     },
     logout () {
-      this.$store.dispatch('logOut')
-      this.$router.push('/')
+      setTimeout(() => {
+        this.$store.dispatch('logOut')
+        this.$router.push('/')
+      }, 1000)
+      this.clearLocalStorage()
+    },
+    clearLocalStorage () {
+      this.$localStorage.remove('user')
     }
+  },
+  created () {
+    this.$router.push('/bots')
   }
 }
 </script>

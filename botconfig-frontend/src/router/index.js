@@ -7,6 +7,8 @@ import marketplace from '@/components/BotMarketplace'
 import config from '@/components/BotConfig'
 import login from '@/components/BotLogin'
 
+import {store} from '../store'
+
 Vue.use(Router)
 
 export default new Router({
@@ -15,27 +17,34 @@ export default new Router({
     {
       path: '/bots',
       name: 'overview',
-      component: overview
+      component: overview,
+      beforeEnter: requireAuth
     },
     {
       path: '/newbot',
       name: 'newbot',
-      component: creator
+      component: creator,
+      beforeEnter: requireAuth
     },
     {
       path: '/template',
       name: 'template',
-      component: template
+      component: template,
+      beforeEnter: requireAuth
     },
     {
       path: '/marketplace',
       name: 'marketplace',
-      component: marketplace
+      component: marketplace,
+      beforeEnter: requireAuth
     },
     {
-      path: '/config/bot/',
+      path: '/bot/:id/config/',
       name: 'config',
-      component: config
+      component: config,
+      beforeEnter: requireAuth,
+      props: true
+
     },
     {
       path: '/',
@@ -44,3 +53,13 @@ export default new Router({
     }
   ]
 })
+
+function requireAuth (to, from, next) {
+  if (!store.getters.checkout) {
+    next({
+      path: '/'
+    })
+  } else {
+    next()
+  }
+}

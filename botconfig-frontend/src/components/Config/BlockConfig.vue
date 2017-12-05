@@ -2,11 +2,15 @@
   <div v-if="isBlockSelected" id="blockConfig">
 
     <div id="header">
-      <div class='rightSite'>
-        <button class="default-btn">{{$lang.translate.config.test}}</button>
-        <button v-on:click='saveData()' class="default-btn">{{$lang.translate.config.save}}</button>
+      <div>
+        <button v-on:click="favoriteBot()" class="default-btn">{{$lang.translate.config.favorite}}</button>
+         <button v-on:click="deleteBot()" class="default-btn">{{$lang.translate.config.delete}}</button>
       </div>
-      <h2>{{block.title}}</h2>
+      <div class='rightSite'>
+        <button v-on:click="testBot()" class="default-btn">{{$lang.translate.config.test}}</button>
+        <button v-on:click="saveData()" class="default-btn">{{$lang.translate.config.save}}</button>
+      </div>
+      <input v-model="title"></input>
     </div>
 
     <div class='wrapper'>
@@ -71,6 +75,15 @@ export default {
     },
     saveData () {
       this.$emit('saveData')
+    },
+    testBot () {
+      this.$emit('testBot')
+    },
+    favoriteBot () {
+      this.$emit('favorite')
+    },
+    deleteBot () {
+      this.$emit('delete')
     }
   },
   computed: {
@@ -83,6 +96,14 @@ export default {
       },
       set (answer) {
         this.$emit('setAnswer', answer)
+      }
+    },
+    title: {
+      get () {
+        return this.block.title
+      },
+      set (title) {
+        this.$emit('setTitle', title)
       }
     }
   }

@@ -27,6 +27,9 @@ export default {
   },
   components: {
     botInfo
+  },
+  created () {
+    this.$store.dispatch('getAllmarketplaceBots')
   }
 }
 </script>
