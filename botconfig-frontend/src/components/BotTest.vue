@@ -121,10 +121,12 @@ export default {
       }
     },
     goback () {
+      this.$store.commit('resetBot')
       this.$router.push({name: 'config', params: {id: this.id}})
     },
     goforward () {
       this.$router.push('/bots')
+      this.$store.commit('resetBot')
     }
   }
 }

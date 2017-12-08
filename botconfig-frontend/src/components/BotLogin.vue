@@ -3,7 +3,7 @@
     <md-layout md-tag="form" novalidate md-align="center">
       <md-layout md-tag="md-card" md-column md-flex="30" md-flex-medium="55" md-flex-small="60" md-flex-xsmall="80" md-large="30">
         <md-card-header>
-          <div class="md-title"><img class="logo" src="../assets/ROQY.png" alt="ROQY"></div>
+          <div><img class="logo" src="../assets/ROQY.png" alt="ROQY"></div>
         </md-card-header>
 
         <md-card-content>
