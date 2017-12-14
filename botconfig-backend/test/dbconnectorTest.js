@@ -1,7 +1,7 @@
 const assert = require('assert'); //node.js core module
 const dbconnector = require('../modules/dbconnector');
 const mongoClient = require('mongodb').MongoClient;
-const mongoURL = process.env.MONGO_URI ||'mongodb://localhost:27017/mydb';
+const mongoURL = process.env.MONGO_URI ||'mongodb://141.19.157.239:27017/mydb';
 
 
 describe('DBConnector', function () {

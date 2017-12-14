@@ -1,5 +1,5 @@
 let MongoClient = require('mongodb').MongoClient;
-let url = process.env.MONGO_URI || 'mongodb://localhost:27017/mydb';
+let url = process.env.MONGO_URI || 'mongodb://141.19.157.239:27017/mydb';
 
 
 let username = '';
