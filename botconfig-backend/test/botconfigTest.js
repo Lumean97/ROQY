@@ -62,9 +62,9 @@ describe('/POST botconfig', () => {
                         .send(testBot)
                         .end((err, res) => {
                             if (err) console.log('pinkSparkles isnt banned yet!')
+                            done();
                         })
                 }
-                done();
             });
     })
 })
@@ -127,42 +127,6 @@ describe('/DELETE botconfig', () => {
 
 describe('/PUT intentname', () => {
 
-    let testBot = { 'name': 'botMitNamenlosenIntents' };
-    let intentRequest = { 'data': { 'intents': { 'name': '' } } }
-    let botId
-
-
-    beforeEach(function (done) {
-        chai.request(server)
-            .post('/bot')
-            .set('Authorization', authKey)
-            .send(testBot)
-            .end((err, res) => {
-                botId = res.body.Id;
-                done();
-            });
-    })
-
-    afterEach(function (done) {
-        chai.request(server)
-            .delete('/bot/' + botId)
-            .set('Authorization', authKey)
-            .send()
-            .end((err, res) => {
-                done()
-            });
-    })
-
-    it('should deny the request to put a nameless intent to testBot', (done) => {
-        chai.request(server)
-            .put('/bot/' + botId)
-            .set('Authorization', authKey)
-            .send(intentRequest)
-            .end((err, res) => {
-                res.should.not.have.status(200);
-                done();
-            });
-    })
 })
 
 describe('PUT start/stop', () => {

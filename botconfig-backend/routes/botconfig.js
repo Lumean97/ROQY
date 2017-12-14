@@ -388,30 +388,6 @@ router.post('/bot', function (req, clientResponse) {
     }
 });
 
-
-router.post("/test", function(req, res){
-    if(updateIntents([{
-        "id": 0,
-        "name": "password_trouble",
-        "answer": "I will forward you to the password FAQ Bot",
-        "nextIntents": [-1],
-        "forwardTo": "1eed14b1-7bec-4752-a2a2-fc26b146d6ec",
-        "questions": ["I have problems with my password!", "I need a new password", "password", "password problems"]
-    },
-        {
-            "id": 1,
-            "name": "Account_problem",
-            "answer": "Describe you problem.",
-            "nextIntents": [0],
-            "questions": ["I have a problem with my account", "My account is locked", "Account"]
-        }
-    ], "de88eb67-172c-432a-a010-1b5e25c6a35b")){
-        responseToClient(res, 200, false, "Done", "WUHU");
-    }else{
-        responseToClient(res, 400, true, "Not done", "Moah");
-    }
-})
-
 function createLivepersonUser(bot, accountId){
     return new Promise(resolve => {
         let skillId= -1;

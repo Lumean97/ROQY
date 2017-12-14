@@ -28,7 +28,9 @@ describe('DBConnector', function () {
 
                         //Check if the bot which got inserted by the connector is in the database
                         assert.equal(result.name, requestToDB.data.name)
-                        done();
+                        clean({name:requestToDB.data.name}).then(() => {
+                            done();
+                        });  
                     });
 
                 })
@@ -56,13 +58,16 @@ describe('DBConnector', function () {
                 mongoClient.connect(mongoURL, function (err, db) {
                     db.collection('botAgents').findOne({id: bot.id}, function (err, res) {
                         assert.deepEqual(res.config, bot.config);
-                        clean({id:bot.id});
                         done();
                     });
                 });
             })
         })
-
+        after((done) => {
+            clean({id:bot.id}).then(() => {
+                done();
+            });         
+        })
     });
 
     describe('#setPrivacy', function () {
@@ -84,13 +89,16 @@ describe('DBConnector', function () {
             dbconnector.setPrivacy(bot.id, bot.privacy).then(res => {
                 mongoClient.connect(mongoURL, function (err, db) {
                     db.collection('botAgents').findOne({id: bot.id}, function (err, res) {
-
                         assert.equal(res.privacy, bot.privacy);
-                        clean({id:bot.id});
                         done();
                     });
                 });
             })
+        })
+        after((done) => {
+            clean({id:bot.id}).then(() => {
+                done();
+            });          
         })
 
     });
@@ -98,8 +106,14 @@ describe('DBConnector', function () {
 });
 
 function clean(payload){
-    mongoClient.connect(mongoURL, function (err, db) {
-        db.collection('botAgents').deleteOne(payload);
+    return new Promise((resolve) => {
+        mongoClient.connect(mongoURL, function (err, db) {
+            db.collection('botAgents').deleteOne(payload, function(err, res){
+                if(err)resolve(err);
+                else resolve();
+            });
+        })
     })
+
 }
 
