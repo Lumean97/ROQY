@@ -6,10 +6,6 @@
         <button v-on:click="favoriteBot()" class="default-btn">{{$lang.translate.config.favorite}}</button>
          <button v-on:click="deleteBot()" class="default-btn">{{$lang.translate.config.delete}}</button>
       </div>
-      <div class='rightSite'>
-        <button v-on:click="testBot()" class="default-btn">{{$lang.translate.config.test}}</button>
-        <button v-on:click="saveData()" class="default-btn">{{$lang.translate.config.save}}</button>
-      </div>
       <input v-model="title"></input>
     </div>
 
@@ -28,7 +24,7 @@
               </md-button>
           </div>
           <div>
-              <input v-model='question' :placeholder='$lang.translate.config.add' name='newBlock' @keyup.enter='addNewQuestion()'/>
+              <input class="chips" v-model='question' :placeholder='$lang.translate.config.add' name='newBlock' @keyup.enter='addNewQuestion()'/>
           </div>
         </div>
       </div>
@@ -40,7 +36,7 @@
       </div>
       
       <div class='block-wrapper'>
-        <textarea v-model="answer" cols="30" rows="10"></textarea>
+        <blocktext :content="answer" @update="answer = $event"></blocktext>
       </div>
       </div>
     </div>
@@ -49,6 +45,7 @@
 </template>
 
 <script>
+import blocktext from './BlockText.vue'
 export default {
   name: 'blockConfig',
   props: ['block'],
@@ -56,6 +53,9 @@ export default {
     return {
       question: ''
     }
+  },
+  components: {
+    blocktext
   },
   methods: {
     addNewQuestion () {
@@ -118,7 +118,7 @@ export default {
 #header {
   width: 100%;
   padding: 2%;
-  background-color: gray;
+  background-color: #cccccc;
   margin: 0;
   display: flex;
   flex-direction: row-reverse;
@@ -145,6 +145,8 @@ export default {
   cursor: pointer;
   background-color: #76bbed;
   color: white;
+  resize: none;
+  word-wrap: break-word;
 }
 .question {
   width: 100%;
@@ -156,22 +158,25 @@ export default {
   margin-top: 6%;
 }
 .block-wrapper{
-  border: 2px solid gray;
+  border: 2px solid #d4d6d8;
   border-radius: 4px;
   padding: 2%;
   margin-top: 1.5%;
-  min-height: 300px;
-  max-height: 300px;
+  min-height: 260px;
+  max-height: 280px;
+  width: 300px;
   overflow: auto;
 }
 ol {
   padding-left: 10%;
 }
 input {
-  border-bottom: 2px solid #76bbed;
   min-width: 40%;
   max-width: 100%;
   margin-top: 5%;
+}
+.chips {
+  border-bottom: 2px solid #d4d6d8;
 }
 input :focus {
   border: none;
