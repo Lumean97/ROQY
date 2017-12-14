@@ -131,49 +131,49 @@ describe('/PUT intentname', () => {
 
 describe('PUT start/stop', () => {
 
-let testBot = {
-        name : 'StartStopBot',
-        description : 'Im a testobject to test the start-stop-technology',
-        test : true,
-        privacy : 'public',
-        botType : 'faq',
-        intents : []
+    let testBot = {
+        name: 'StartStopBot',
+        description: 'Im a testobject to test the start-stop-technology',
+        test: true,
+        privacy: 'public',
+        botType: 'faq',
+        intents: []
     }
     let testBotId;
     before(function (done) {
         chai.request(server)
-        .post('/bot')
-        .set('Authorization', authKey)
-        .send(testBot)
-        .end((err, res) => {
-            if (err) {
-                fail('StartStopBot can get saved into database!')
-            }
-            else {
-                testBotId = res.body.extra.botId;
-                it('should show as status test for StartStopBot.', (done) => {
-                    chai.request(server)
-                    .get('/bot/' + testBotId + '/status')
-                    .send()
-                    .end((err, res) => {
-                        res.should.have.status(200)
-                        //TODO: The body from this bot inside the response should have test as status.
+            .post('/bot')
+            .set('Authorization', authKey)
+            .send(testBot)
+            .end((err, res) => {
+                if (err) {
+                    fail('StartStopBot can get saved into database!')
+                }
+                else {
+                    testBotId = res.body.extra.botId;
+                    it('should show as status test for StartStopBot.', (done) => {
+                        chai.request(server)
+                            .get('/bot/' + testBotId + '/status')
+                            .send()
+                            .end((err, res) => {
+                                res.should.have.status(200)
+                                //TODO: The body from this bot inside the response should have test as status.
+                            })
                     })
-                })
-                done()
-            }
-        })
+                    done()
+                }
+            })
     })
 
     after(function (done) {
         chai.request(server)
-        .delete('/bot/' + botId)
-        .send()
-        .end((err, res) => {
-            if (err) {
-                console.log('StartStopBot cant get deleted!')
-            }
-        })
+            .delete('/bot/' + botId)
+            .send()
+            .end((err, res) => {
+                if (err) {
+                    console.log('StartStopBot cant get deleted!')
+                }
+            })
     })
 })
 
@@ -182,26 +182,26 @@ describe('POST /auth', () => {
         chai.request(server)
             .post('/auth')
             .send({
-                "username":"Hallo",
-                "password":"Welt"
+                "username": "Hallo",
+                "password": "Welt"
             })
             .end((err, res) => {
-            if(err)done(err);
-            res.should.have.status(200);
-            assert.equal(res.body.extra.Authorization, 23625217);
-            done();
+                if (err) done(err);
+                res.should.have.status(200);
+                assert.equal(res.body.extra.Authorization, 23625217);
+                done();
             });
     })
 })
 
 describe('GET status', () => {
     let testBot = {
-        name : 'Statussymbol',
-        description : '',
-        test : true,
-        privacy : 'public',
-        botType : 'faq',
-        intents : []
+        name: 'Statussymbol',
+        description: '',
+        test: true,
+        privacy: 'public',
+        botType: 'faq',
+        intents: []
     }
     let testBotId;
 
@@ -249,6 +249,53 @@ describe('GET status', () => {
         done();
     })
 })
+
+describe('insert an public bot and check if it gets returned', () => {
+    it('should return the bot which got inserted before'), (done) => {
+        let botId
+        let testBot = {
+            name: 'publicBot',
+            description: 'Im public, everyone can take me',
+            test: true,
+            privacy: 'public',
+            botType: 'faq',
+            intents: []
+        }
+
+        chai.request(server)
+            .post('/bot')
+            .set('Authorization', authKey)
+            .send(testBot)
+            .end((err, res) => {
+                if (err) {
+                    done('publicBot cant get inserted!')
+                }
+                else {
+                    botId = res.body.extra.botId
+                    chai.request(server)
+                    .get('/bot/public')
+                    .send()
+                    .end((err, res) => {
+                        console.log("Found");
+                        if (err) {
+                            done('Cant recieve public-bots')
+                        }
+                        else {
+                            let botFound = false;
+                            for(let i = 0; i<res.body.extra.length; i++){
+                                if(res.body.extra[i].id === botId){
+                                    done();
+                                    console.log("BOT FOUND");
+                                    botFound = true;
+                                }
+                            }
+                            if(!botFound)done("Bot not found");
+                        }
+                    })
+                }
+            })
+    }
+});
 
 describe('parse config to intents', () => {
     it('should come the correct config', (done) => {
