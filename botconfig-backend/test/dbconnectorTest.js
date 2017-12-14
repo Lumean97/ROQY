@@ -5,6 +5,58 @@ const mongoURL = process.env.MONGO_URI ||'mongodb://141.19.157.239:27017/mydb';
 
 
 describe('DBConnector', function () {
+    describe('#deleteFromDB', () => {
+        it('should error due undefined botId', function(done) {
+            dbconnector.deleteFromDB().then(res => {
+
+                assert.equal(res, false);
+                done();
+            })
+        })
+        it('should error due bot not found', function(done){
+            dbconnector.deleteFromDB({botId:''}).then(res => {
+                assert.equal(res, false);
+                done();
+            });
+        })
+
+        it('should delete the bot', function(done){
+            let testBot = {
+                id:"TestID"
+            }
+            dbconnector.writeToDB({data:testBot}).then(res => {
+                dbconnector.deleteFromDB({botId:testBot.id}).then(res => {
+                    assert.equal(res, true);
+                    clean({id:testBot.id});
+                    done();
+                })
+            })
+        });
+    });
+
+    describe('#readFromDB', () => {
+        it('should error due bot not found', function(done){
+            dbconnector.readFromDB({botId:''}).then(res => {
+                assert.equal(res, false);
+                done();
+            });
+        })
+
+        it('should read the bot', function(done){
+            let testBot = {
+                id:"TestID"
+            }
+            dbconnector.writeToDB({data:testBot}).then(res => {
+                dbconnector.readFromDB({botId:testBot.id}).then(res => {
+                    testBot._id = res._id;
+                    assert.deepEqual(res, testBot);
+                    clean({id:testBot.id});
+                    done();
+                })
+            })
+        });
+    });
+
     describe('#writeToDB', function () {
         it('should show the inserted bot inside the DB', function (done) {
 
