@@ -18,9 +18,5 @@ app.set('view engine', 'jade');
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', botconfig);
-const fs = require('fs');
-console.log(__dirname);
-let parseConfigExpected = JSON.parse(fs.readFileSync(__dirname + '/test/pre-built-jsons/parseConfigExpected.json', 'utf8'));
-let parseConfigPayload = JSON.parse(fs.readFileSync(__dirname + '/test/pre-built-jsons/parseConfigPayload.json', 'utf8'));
-botconfig.parseConfigTointents(parseConfigPayload)
+
 module.exports = app;

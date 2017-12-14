@@ -34,7 +34,8 @@ const messages = {
     "privacyUpdated":"Privacy has been updated successfully!",
     "writeDBError":"Error while writing into DB.",
     "readDBError":"Error while reading from DB",
-    "deleteDBError":"Error while deleting from DB"
+    "deleteDBError":"Error while deleting from DB",
+    "nameNeeded":"Error while renaming Bot: Name is needed!"
 };
 
 const maxCallsOnLUIS = 5;
@@ -616,10 +617,14 @@ router.delete("/bot/:id", function (req, clientResponse) {
  * Headers:
  *      Authorization - Account ID from LiveEngage to identify the bots this customer owns.
  */
-router.put('/bot/:id', function(req, clientResponse){
+router.put('/bot/:id/rename', function(req, clientResponse){
     let auth = req.header("Authorization");
     if(auth === undefined){
         responseToClient(clientResponse, 401, true, messages.unauthorized);
+        return;
+    }
+    if(req.body.name === "" || req.body.name === undefined){
+        responseToClient(clientResponse, 406, true, messages.nameNeeded);
         return;
     }
     let id = req.params.id;
@@ -712,7 +717,7 @@ router.put('/bot/:id/privacy', function(req, clientResponse){
         return;
     }
     let privacy = req.body.privacy;
-    if(privacy === undefined){
+    if(privacy !== "public" && privacy !== "private"){
         responseToClient(clientResponse, 406, true, messages.privacyNotAcceptable);
         return;
     }
@@ -721,7 +726,7 @@ router.put('/bot/:id/privacy', function(req, clientResponse){
         responseToClient(clientResponse, 200, false, messages.privacyUpdated);
     })
     .catch(function () {
-        responseToClient(clientResponse, 500, true, messages.botNotFound);
+        responseToClient(clientResponse, 404, true, messages.botNotFound);
     })
 });
 
@@ -755,7 +760,7 @@ router.put('/bot/:id/start', function(req, clientResponse){
                 if(success){
                     responseToClient(clientResponse, 200, false, messages.botHasBeenStarted);
                 }else{
-                    responseToClient(clientResponse, 500, true, messages.botNotFound);
+                    responseToClient(clientResponse, 404, true, messages.botNotFound);
                 }
             });
 
@@ -795,7 +800,7 @@ router.put('/bot/:id/stop', function(req, clientResponse){
                 if(success){
                     responseToClient(clientResponse, 200, false, messages.botHasBeenStopped);
                 }else{
-                    responseToClient(clientResponse, 500, true, messages.botNotFound);
+                    responseToClient(clientResponse, 404, true, messages.botNotFound);
                 }
             });
         }
