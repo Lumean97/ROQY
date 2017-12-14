@@ -55,26 +55,6 @@ exports.writeToDB = function (request) {
                         });
                         resolve(true);
                     }
-
-                    //Find the specific intent with request.indentId inside the found bot
-                    else {
-                        let intent = undefined;
-                        for (let i = 0; i < res.intents.length; i++) {
-                            if (res.intents[i] === request.intentId) {
-                                intent = res.intents[i];
-                                break;
-                            }
-                        }
-
-                        //replace old intent with request.data
-                        if (intent !== undefined) {
-                            //TODO delte old intent and insert newdb.
-                            resolve(true);
-                        } else {
-                            // Intent not found, return false.
-                            resolve(false);
-                        }
-                    }
                 });
             }
         });
@@ -116,26 +96,6 @@ exports.readFromDB = function (request) {
                         if (request.intendId === undefined) {
                             //return found bot
                             resolve(res);
-                        }
-
-                        //Find the specific intent with request.intentId inside the found bot
-                        else {
-                            let intent = undefined;
-                            for (let i = 0; i < res.intents.length; i++) {
-                                if (res.intents[i] === request.intentId) {
-                                    intent = res.intents[i];
-                                    break;
-                                }
-                            }
-
-                            //return found intent
-                            if (intent !== undefined) {
-                                resolve({});
-
-                                //return an empty JSON Array    
-                            } else {
-                                resolve(intent);
-                            }
                         }
                     }
                 });
