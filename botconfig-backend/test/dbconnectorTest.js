@@ -84,8 +84,8 @@ describe('DBConnector', function () {
                             done();
                         });  
                     });
-
                 })
+                db.close();
             })
         })
     })
@@ -102,6 +102,7 @@ describe('DBConnector', function () {
                     bot.config = "Hallo Welt";
                     done();
                 })
+                db.close();
             });
         });
         it('should write the config to the db', (done) => {
@@ -112,6 +113,7 @@ describe('DBConnector', function () {
                         assert.deepEqual(res.config, bot.config);
                         done();
                     });
+                    db.close();
                 });
             })
         })
@@ -134,6 +136,7 @@ describe('DBConnector', function () {
                     bot.privacy = "private";
                     done();
                 })
+                db.close();
             });
         });
         it('should write the config to the db', (done) => {
@@ -144,6 +147,7 @@ describe('DBConnector', function () {
                         assert.equal(res.privacy, bot.privacy);
                         done();
                     });
+                    db.close();
                 });
             })
         })
@@ -164,6 +168,7 @@ function clean(payload){
                 if(err)resolve(err);
                 else resolve();
             });
+            db.close();
         })
     })
 
