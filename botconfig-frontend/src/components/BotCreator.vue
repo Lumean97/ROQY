@@ -28,7 +28,7 @@
             <div class="row">
               <div v-for="(template, templates) in templates" :key="template.name">
                   <div class="card-wraper">
-                    <div class="card" @click="selectTemplate(template)" :class="{'selected': isSelected(template)}">
+                    <div class="card" @click="selectTemplate(template)" :class="{'selected': isSelected(template), 'isAvaible': isAvaible(template)}">
                     <img :src="getTemplateImage(template.name)" :alt="template.name">
                     <div class="container">
                       <h4><b>{{template.name}}</b></h4>
@@ -44,6 +44,9 @@
           <div>
             <button class="button" @click="createBot()">{{$lang.translate.creator.create}}</button>
           </div>
+          <div id="firstButton">
+            <button class="button" @click="routeBack()">{{$lang.translate.creator.back}}</button>
+          </div>
         </div>
       </div>    
       </div>
@@ -56,6 +59,7 @@
 import botConfig from './BotConfig.vue'
 import botWelcome from '../assets/bot_orange.svg'
 import botFaq from '../assets/bot_violett.svg'
+import api from '../api/botData'
 export default {
   name: 'creator',
   data () {
@@ -70,23 +74,35 @@ export default {
     }
   },
   computed: {
+    /**
+    * Returns all Templates saved in store
+    */
     templates () {
       return this.$store.getters.getTemplates
     }
   },
   watch: {
+    /**
+    * Returns true if bot.name input field is not empty else false
+    */
     botname () {
       if (this.botname !== '') {
         this.botnameValid = true
       }
       this.validInput()
     },
+    /**
+    * Returns true if bot.description is not empty and length of text is not over 160 letters
+    */
     description () {
       if (this.description !== '' && this.description.length <= 160) {
         this.descriptionValid = true
       }
       this.validInput()
     },
+    /**
+    * Returns true if Bot-Template is selected else start method validInput
+    */
     item () {
       if (this.item !== '') {
         this.selected = true
@@ -95,34 +111,91 @@ export default {
     }
   },
   methods: {
+    /**
+    * Bot will be pushed to the store
+    * @param allValid true if all input fields filled else false
+    */
     createBot () {
       if (this.allValid) {
-        this.$store.dispatch('addNewBot', {
+        api.addNewBot({
           name: this.botname,
           description: this.description,
-          template: this.template.name
+          botType: this.template.name
         })
-        this.$router.push('/bots')
+        .then((response) => {
+          this.$router.push('/bots')
+        })
+        .catch((err) => {
+          console.log(err.message)
+          alert('Failed to create this bot please try again.')
+        })
       }
     },
+    /**
+    * routes user back to /bots
+    */
+    routeBack () {
+      this.$router.push('/bots')
+    },
+    /**
+    * Sets this.allValid true if all input field filled
+    */
     validInput () {
       if (this.botnameValid && this.descriptionValid && this.selected) {
         this.allValid = true
       }
     },
+    /**
+    * Method to clear input fields after creating/leaving the path
+    */
     reset () {
       this.botname = ''
       this.description = ''
       this.item = ''
     },
+    /**
+    * @param selected True if Template is selected
+    */
     selectTemplate (template) {
-      this.template = template
-      this.selected = true
-      this.validInput()
+      let welcome = this.$store.getters.getbots.find((bot) => {
+        return bot.botType === 'welcome'
+      })
+      if (welcome === undefined) {
+        this.template = template
+        this.selected = true
+        this.validInput()
+      } else {
+        if (template.name === 'faq') {
+          this.template = template
+          this.selected = true
+          this.validInput()
+        } else {
+          this.selected = false
+          this.template = null
+        }
+      }
     },
     isSelected (template) {
       if (this.selected) {
         return this.template === template
+      }
+    },
+    /**
+    * If selected Bot is welcome then use Welcome-Bot Image else Faq-Bot image
+    * @param template Current Bot Template
+    */
+    isAvaible (template) {
+      let welcome = this.$store.getters.getbots.find((bot) => {
+        return bot.botType === 'welcome'
+      })
+      if (welcome === undefined) {
+        return false
+      } else {
+        if (template.name === 'faq') {
+          return false
+        } else {
+          return true
+        }
       }
     },
     getTemplateImage (template) {
@@ -203,6 +276,10 @@ export default {
   .selected {
     border: 3px solid orange;
   }
+  .isAvaible {
+    background-color: #d4d6d8;
+    opacity: .5%;
+  }
   .container {
     margin-top: 5%;
     padding: 2px 10px;
@@ -236,6 +313,11 @@ export default {
     cursor: pointer;
     width: 90px;
   }
+
+  #firstButton {
+    margin-right: 2%;
+  }
+
   @media only screen and (max-width: 800px) {
     .card-wraper {
       display: inline;

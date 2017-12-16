@@ -11,7 +11,7 @@
       <h2>{{$lang.translate.test.title}}</h2>
     </div>
 
-    <div v-if="loaded" id="test-card">
+    <div v-if="loaded" id="test-card" class="default-shadow">
       <div class="card-header">
             <img src="../assets/bot_orange.svg">
             <h3 id="title">{{bot.name}}</h3>
@@ -150,7 +150,6 @@ export default {
   margin: 3% auto;
   border: 2px solid grey;
   border-radius: 3px;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)
 }
 .card-header {
   width: 100%;

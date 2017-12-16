@@ -926,42 +926,47 @@ function updateIntents(intents, botId){
 
 }
 
+function addToIntents(intents, children, blocks, intentIDCount) {
+    let nextIntents = [];
+    for (const group of children) {
+        let block = blocks.get(group.block);   
+        let intent = {
+            id: intentIDCount.count++,
+            name: block.title,
+            answer: block.answer,
+            questions: block.questions,
+            nextIntents: group.children.length > 0 ? addToIntents(intents, group.children, blocks, intentIDCount) : []
+        }
+        intents.push(intent);
+        nextIntents.push(intent.id);
+    }
+
+    return nextIntents;
+}
+
 router.parseConfigTointents = function(bot){
     let config = bot.config;
-
-    bot.originIntentState = {
-        id: -1,
-        answer: "Placeholder Welcome Message",
-        nextIntents: []
-    };
+    let welcomeMsg = '';
     if(config === null){
         return;
     }
-    for(let i = 0; i<config.groups.length; i++){
-        bot.originIntentState.nextIntents.push(config.groups[i].block);
+
+    let blockMap = new Map(config.blocks.map(obj => [ obj.id, obj ]));
+    // Try to find a welcome message block
+    for (const group of config.groups) {
+        let block = blockMap.get(group.block);
+        if (block.title.toUpperCase() === 'WELCOME MESSAGE') {
+            welcomeMsg = block.answer;
+        }
     }
 
-    for(let i = 0; i<config.blocks.length; i++){
-        bot.intents.push({
-            id: config.blocks[i].id,
-            name: config.blocks[i].title,
-            answer: config.blocks[i].answer,
-            questions: config.blocks[i].questions,
-            nextIntents: []
-        });
-    }
+    bot.originIntentState = {
+        id: -1,
+        answer: welcomeMsg,
+        nextIntents: []
+    };
 
-    for(let i = 0; i<config.groups.length; i++){
-        let block = config.groups[i];
-
-        (function parseLol(block, bot){
-            let currentBlock = bot.intents[block.block];
-            for(let j = 0; j<block.children.length; j++){
-                currentBlock.nextIntents.push(block.children[j].block);
-                parseLol(block.children[j], bot);
-            }
-        })(block, bot);
-    }
+    bot.originIntentState.nextIntents = addToIntents(bot.intents, config.groups, blockMap, {count: 0});
 };
 
 /**

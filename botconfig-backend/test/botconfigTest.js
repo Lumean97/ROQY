@@ -286,24 +286,46 @@ describe('GET status', () => {
     })
 })
 
-describe('parse config to intents', () => {
-    it('should come the correct config', (done) => {
-        let parseConfigExpected = JSON.parse(fs.readFileSync(__dirname + '/pre-built-jsons/parseConfigExpected.json', 'utf8'));
-        let parseConfigPayload = JSON.parse(fs.readFileSync(__dirname + '/pre-built-jsons/parseConfigPayload.json', 'utf8'));
-        backend.parseConfigTointents(parseConfigPayload)
-        assert.deepEqual(parseConfigPayload, parseConfigExpected);
-        done();
-    });
+function getNextIntents(nextIntents, intentMap) {
+    let intents = [];
+    for (const intent of nextIntents) {
+        intents.push(intentMap.get(intent).name);
+    }
+    return intents;
+}
 
-    it('should come the correct config with empty intents', (done) => {
-        let parseConfigExpected = JSON.parse(fs.readFileSync(__dirname + '/pre-built-jsons/parseConfigExpected.json', 'utf8'));
+
+describe('parse config to intents', () => {
+    it('should return the correct config', () => {
         let parseConfigPayload = JSON.parse(fs.readFileSync(__dirname + '/pre-built-jsons/parseConfigPayload.json', 'utf8'));
-        parseConfigExpected.intents = [];
-        parseConfigExpected.config = null;
-        parseConfigExpected.originIntentState.nextIntents = [];
-        parseConfigPayload.config = null;
-        backend.parseConfigTointents(parseConfigPayload)
-        assert.deepEqual(parseConfigPayload, parseConfigExpected);
-        done();
-    });
+        backend.parseConfigTointents(parseConfigPayload);
+        parseConfigPayload.intents.should.have.lengthOf(11);
+        let intentMap = new Map(parseConfigPayload.intents.map(obj => [obj.id, obj]));
+        let initIntents = getNextIntents(parseConfigPayload.originIntentState.nextIntents, intentMap);
+
+        initIntents.should.deep.equal(['A', 'E', 'F']);
+
+        let nextIntent = intentMap.get(parseConfigPayload.originIntentState.nextIntents[0])
+        let nextIntents = getNextIntents(nextIntent.nextIntents, intentMap);
+        nextIntents.should.deep.equal(['B', 'D', 'H', 'F']);
+
+        // Path to 'Test' block
+        nextIntent = intentMap.get(parseConfigPayload.originIntentState.nextIntents[2])
+        nextIntent.name.should.equal('F');
+        nextIntent = intentMap.get(nextIntent.nextIntents[0])
+        nextIntent.name.should.equal('G');
+        nextIntent = intentMap.get(nextIntent.nextIntents[0])
+        nextIntent.name.should.equal('I');
+        nextIntent = intentMap.get(nextIntent.nextIntents[0])
+        nextIntent.name.should.equal('Test');
+        nextIntent.questions.should.have.members(['Wer', 'Wie', 'Was']);
+        nextIntent.answer.should.equal('Warum');
+    })
+
+    it('should set the welcome message correctly', () => {
+        let parseConfigPayload = JSON.parse(fs.readFileSync(__dirname + '/pre-built-jsons/welcomeTest.json', 'utf8'));
+        backend.parseConfigTointents(parseConfigPayload);
+        parseConfigPayload.intents.should.have.lengthOf(3);
+        parseConfigPayload.originIntentState.answer.should.equal('Correct welcome message');
+    })
 });

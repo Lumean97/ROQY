@@ -34,10 +34,11 @@ export default {
 
 <style scoped>
   #list-container {
-    height: 500px;
+    height: 100%;
     width: 200px;
     display: inline-block;
     vertical-align: top;
+    overflow-y: auto;
   }
   .block-container {
     height: 40px;

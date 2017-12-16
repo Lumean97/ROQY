@@ -11,8 +11,6 @@ module.exports = {
     browser
       .url(devServer)
       .waitForElementVisible('#app', 5000)
-      .assert.elementPresent('.md-title')
-      .assert.elementPresent('.logo')
       .end()
   }
 }

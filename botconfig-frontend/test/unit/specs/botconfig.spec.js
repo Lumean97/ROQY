@@ -1,13 +1,25 @@
 import config from '@/components/BotConfig'
-import sinon from 'sinon'
 import { shallow } from 'vue-test-utils'
+
+const $lang = {
+  translate: {
+    config: {
+      test: 'test',
+      save: 'save',
+      unnamedBlock: 'new'
+    }
+  }
+}
 
 describe('Block manipulation', () => {
   let cmp
 
   beforeEach(() => {
-    sinon.stub(config.computed, 'defaultTitle').value(() => 'new')
-    cmp = shallow(config)
+    cmp = shallow(config, {
+      mocks: {
+        $lang
+      }
+    })
   })
 
   it('Blocks start empty', () => {
@@ -47,8 +59,11 @@ describe('Favorites', () => {
   let cmp
 
   beforeEach(() => {
-    sinon.stub(config.computed, 'defaultTitle').value(() => 'new')
-    cmp = shallow(config)
+    cmp = shallow(config, {
+      mocks: {
+        $lang
+      }
+    })
   })
 
   it('Favorites start empty', () => {
@@ -69,10 +84,13 @@ describe('Favorites', () => {
       .to.have.property('isFavorite', false)
     expect(cmp.vm.favorites.length)
       .to.equal(0)
-    cmp.vm.favoriteBlock(id)
+    cmp.vm.blockToggleFavorite(id)
     expect(cmp.vm.favorites.length)
       .to.equal(1)
     expect(cmp.vm.favorites[0])
       .to.equal(block)
+    cmp.vm.blockToggleFavorite(id)
+    expect(cmp.vm.favorites.length)
+    .to.equal(0)
   })
 })

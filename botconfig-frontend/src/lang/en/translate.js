@@ -1,3 +1,6 @@
+/**
+ * File to save english translation of each components.
+ */
 module.exports = {
   header: {
     bot_config: 'Bot Configuration',
@@ -69,5 +72,9 @@ module.exports = {
     back: 'go back',
     forward: 'looks good!',
     title: 'Testing'
+  },
+  marketplace: {
+    download: 'Download',
+    title: 'Do you want to download this bot?'
   }
 }

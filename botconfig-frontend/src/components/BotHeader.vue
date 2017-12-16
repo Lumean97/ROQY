@@ -2,17 +2,17 @@
 <template>
   <div>
     <md-toolbar class="md-dense" style="color: white; background-color: #414040;">
-      <img class="logo" src="../assets/ROQY.png" alt="ROQY">
+      <router-link to='/bots'><img class="logo" src="../assets/ROQY.png" alt="ROQY"></router-link>
       <!--TODO "md-title" dient nur als Platzhalter zwischen Logo und DE|EN.
           Platzhalter entfernen und Logo + Sprachauswahl richtig einordnen!-->
       <h1 class="md-title"></h1>
       <div class="lg">
         <div>
-            <span @click="changeLang('de')" class="de" >DE</span>
-            <span @click="changeLang('en')">EN</span> 
+            <span @click="changeLang('de')" class="de header-text" >DE</span>
+            <span @click="changeLang('en')" class="header-text">EN</span> 
         </div>
       </div>
-      <span @click="logout()" style="margin-left:10px">{{$lang.translate.header.bot_login}}</span>
+      <span @click="logout()" class="header-text" style="margin-left:10px">{{$lang.translate.header.bot_login}}</span>
     </md-toolbar>
     <router-view />
   </div>
@@ -29,9 +29,15 @@ export default {
     }
   },
   methods: {
+    /**
+    * @param lg language that will be selected
+    */
     changeLang (lg) {
       this.$lang.setLang(lg)
     },
+    /**
+    * Method will route user to the / path and starts Method clearLocalStorage
+    */
     logout () {
       setTimeout(() => {
         this.$store.dispatch('logOut')
@@ -39,12 +45,15 @@ export default {
       }, 100)
       this.clearLocalStorage()
     },
+    /**
+    * Method to clear authorizations from user
+    */
     clearLocalStorage () {
       this.$localStorage.remove('user')
     }
   },
   created () {
-    this.$router.push('/bots')
+    this.$router.push('/template')
   }
 }
 </script>
@@ -89,5 +98,8 @@ span.de {
   text-align:left;
   margin: 0%;
   padding:0%;
+}
+.header-text{
+  color:white;
 }
 </style>

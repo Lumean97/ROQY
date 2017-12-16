@@ -38,5 +38,5 @@ export default {
   margin: 0 ;
   min-width: 463px;
 }
-
+@import './assets/defaults.css'
 </style>

@@ -11,12 +11,19 @@ describe('DBConnector', function () {
             mongoClient.connect(mongoURL, function (err, db) {
                 if (err) throw err;
                 //Inputparameter for data and for the searchrequest
-                var requestToDB = { data: { name: 'Fußfetischist' }}
+                var requestToDB = {
+                    data: {name : 'writeTestBot',
+                description : 'Im a testobject to test the writeToDB method',
+                test : true,
+                privacy : 'public',
+                botType : 'faq',
+                intents : []}}
+
 
                 //Make a create bot Request
                 dbconnector.writeToDB(requestToDB).then(res => {
                     //To get the inserted bot right off the database and save it in result
-                    db.collection('botAgents').findOne({ name : 'Fußfetischist'}, function (err, result) {
+                    db.collection('botAgents').findOne({ name : requestToDB.data.name}, function (err, result) {
                         if (err) console.log('The inserted Bot can not be found or could not be inserted!')
 
                         //Check if the bot which got inserted by the connector is in the database

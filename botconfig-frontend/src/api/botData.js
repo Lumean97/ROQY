@@ -3,21 +3,23 @@ import axios from 'axios'
 axios.defaults.baseURL = process.env.API_URL
 
 export default {
-  uploadBot (cb, bot) {
-    axios.put('/bot/' + bot.id + '/privacy', {
-      privacy: 'public'
-    },
-      {
-        headers: {
-          Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'
+  uploadBot (bot) {
+    return new Promise((resolve, reject) => {
+      axios.put('/bot/' + bot.id + '/privacy', {
+        privacy: 'public'
+      },
+        {
+          headers: {
+            Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'
+          }
         }
-      }
-    )
-    .then(function (response) {
-      cb(bot)
-    })
-    .catch(function (error) {
-      console.log(error)
+      )
+      .then(function (response) {
+        resolve(response.data.extra)
+      })
+      .catch(function (error) {
+        reject(error)
+      })
     })
   },
   getBots (cb) {
@@ -29,28 +31,30 @@ export default {
             console.log(error)
           })
   },
-  addNewBot (cb, bot) {
-    axios.post('/bot', {
-      'name': bot.name,
-      'description': bot.description,
-      'intents': [],
-      'test': 'true',
-      'botType': bot.template,
-      'privacy': 'private',
-      'config': null
-    },
-      {
-        headers: {
-          Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'
-        }
+  addNewBot (bot) {
+    return new Promise((resolve, reject) => {
+      axios.post('/bot', {
+        'name': bot.name,
+        'description': bot.description,
+        'intents': [],
+        'test': 'true',
+        'botType': bot.botType,
+        'privacy': 'private',
+        'config': bot.config || null
+      },
+        {
+          headers: {
+            Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'
+          }
+        })
+      .then(function (response) {
+        resolve(response.data.extra)
+        console.log('here')
       })
-    .then(function (response) {
-      bot.id = response.data.extra.botId
-      console.log(response.data.extra)
-      cb(bot)
-    })
-    .catch(function (error) {
-      console.log(error)
+      .catch(function (error) {
+        console.log(error)
+        reject(error)
+      })
     })
   },
   changeBotState (bot, start, stop) {
@@ -104,13 +108,21 @@ export default {
   },
   renameBot (cb, bot) {
     bot[0].name = bot[1].name
-    axios.put('/bot/' + bot[0].id, bot[0], { headers: { Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4' } })
-          .then(function (response) {
-            cb(bot)
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
+    axios.put('/bot/' + bot[0].id + '/rename', {
+      name: 'bot.name'
+    },
+      {
+        headers: {
+          Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'
+        }
+      }
+    )
+    .then(function (response) {
+      cb(bot)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
   },
   getBot (id) {
     return new Promise((resolve, reject) => {

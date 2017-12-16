@@ -2,15 +2,11 @@
   <div v-if="isBlockSelected" id="blockConfig">
 
     <div id="header">
-      <div>
-        <button v-on:click="favoriteBot()" class="default-btn">{{$lang.translate.config.favorite}}</button>
-         <button v-on:click="deleteBot()" class="default-btn">{{$lang.translate.config.delete}}</button>
-      </div>
-      <div class='rightSite'>
-        <button v-on:click="testBot()" class="default-btn">{{$lang.translate.config.test}}</button>
-        <button v-on:click="saveData()" class="default-btn">{{$lang.translate.config.save}}</button>
-      </div>
-      <input v-model="title"></input>
+      <span v-on:click="toggleFavorite()" v-if="isFavorite" class="favIcon" style="color:orange;">★</span>
+      <span v-on:click="toggleFavorite()" v-else  class="favIcon">☆</span>
+      <input ref="titleInput" id="titleInput" v-model="title">
+      <span v-on:click="focusInput()" style="font-size:24px;margin-right:5%;">✎</span>
+      <button v-on:click="deleteBlock()" class="default-btn">delete block</button>
     </div>
 
     <div class='wrapper'>
@@ -28,7 +24,7 @@
               </md-button>
           </div>
           <div>
-              <input v-model='question' :placeholder='$lang.translate.config.add' name='newBlock' @keyup.enter='addNewQuestion()'/>
+              <input class="chips" v-model='question' :placeholder='$lang.translate.config.add' name='newBlock' @keyup.enter='addNewQuestion()'/>
           </div>
         </div>
       </div>
@@ -39,9 +35,7 @@
         <h4 >{{$lang.translate.config.answer}}</h4>
       </div>
       
-      <div class='block-wrapper'>
-        <textarea v-model="answer" cols="30" rows="10"></textarea>
-      </div>
+      <textarea v-model="answer" cols="30" rows="10" class="block-wrapper"></textarea>
       </div>
     </div>
   </div>
@@ -79,16 +73,22 @@ export default {
     testBot () {
       this.$emit('testBot')
     },
-    favoriteBot () {
+    toggleFavorite () {
       this.$emit('favorite')
     },
-    deleteBot () {
+    deleteBlock () {
       this.$emit('delete')
+    },
+    focusInput () {
+      this.$refs.titleInput.focus()
     }
   },
   computed: {
     isBlockSelected () {
       return this.block !== undefined && this.block !== null
+    },
+    isFavorite () {
+      return this.block !== undefined && this.block !== null && this.block.isFavorite
     },
     answer: {
       get () {
@@ -118,10 +118,8 @@ export default {
 #header {
   width: 100%;
   padding: 2%;
-  background-color: gray;
+  background-color: #eeeeee;
   margin: 0;
-  display: flex;
-  flex-direction: row-reverse;
 }
 #header>h2 {
   margin-top: 2.5%;
@@ -145,6 +143,8 @@ export default {
   cursor: pointer;
   background-color: #76bbed;
   color: white;
+  resize: none;
+  word-wrap: break-word;
 }
 .question {
   width: 100%;
@@ -156,22 +156,23 @@ export default {
   margin-top: 6%;
 }
 .block-wrapper{
-  border: 2px solid gray;
+  border: 2px solid #d4d6d8;
   border-radius: 4px;
   padding: 2%;
   margin-top: 1.5%;
-  min-height: 300px;
-  max-height: 300px;
+  min-height: 260px;
+  max-height: 280px;
+  width: 300px;
   overflow: auto;
 }
 ol {
   padding-left: 10%;
 }
-input {
-  border-bottom: 2px solid #76bbed;
-  min-width: 40%;
-  max-width: 100%;
-  margin-top: 5%;
+#titleInput {
+  font-size: 24px;
+}
+.chips {
+  border-bottom: 2px solid #d4d6d8;
 }
 input :focus {
   border: none;
@@ -185,15 +186,8 @@ input :focus {
 .rightSite {
   display: block;
 }
-.default-btn {
-  background-color: orange;
-  border-radius: 16px;
-  padding: 2px 4px;
-  margin-bottom:3px;
-  color: white;
-  font-family: Roboto;
-  font-size: 14px;
-  text-align: center;
-  min-width: 80%;
+.favIcon {
+  font-size: 30px;
+  margin-right: 5%;
 }
 </style>

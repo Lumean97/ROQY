@@ -1,3 +1,6 @@
+/**
+ * File to save german translation of each components.
+ */
 module.exports = {
   header: {
     bot_config: 'Bot Konfigurator',
@@ -68,5 +71,9 @@ module.exports = {
     back: 'zurück',
     forward: 'weiter',
     title: 'Testen'
+  },
+  marketplace: {
+    download: 'Herunterladen',
+    title: 'Möchten Sie den Bot herunterladen?'
   }
 }

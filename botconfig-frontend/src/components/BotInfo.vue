@@ -1,28 +1,36 @@
 <template>
   <div class="card-wrapper">
-    <md-card style="border-radius:6px;" class="md-with-hover" >
+    <md-card style="border-radius:6px;" class="md-with-hover">
       <div>
         <div class="header">
-          <md-switch style="margin: 10px 0 0 0" class="md-primary" v-on:change="changeBot(botData)" v-model="isRunning"></md-switch>
+          <md-switch v-if="parent === 'overview'" style="margin: 10px 0 0 0" class="md-primary" v-on:change="changeBot(botData)" v-model="isRunning"></md-switch>
           <md-menu  md-direction="bottom left">
-            <md-button style="padding:0;margin-top:-10px;color: 7F7F7F" class="md-icon-button header-menu-btn" md-menu-trigger>
+            <md-button v-if="parent === 'overview'" style="padding:0;margin-top:-10px;color: 7F7F7F" class="md-icon-button header-menu-btn" md-menu-trigger>
+              <md-icon>more_vert</md-icon>
+            </md-button>
+            <md-button v-if="parent === 'marketplace'" style="padding:0;margin-top:10px;color: 7F7F7F" class="md-icon-button header-menu-btn" md-menu-trigger>
               <md-icon>more_vert</md-icon>
             </md-button>
 
-            <md-menu-content>
+            <md-menu-content  v-if="parent === 'overview'">
                 <md-menu-item v-on:click="openDialog(confirm.ref3)">
                 <span >{{$lang.translate.info.upload}}</span>
               </md-menu-item>
-              <md-menu-item id="#renameconfirm"  v-on:click="openDialog(confirm.ref2)">
+              <md-menu-item id="#renameconfirm" v-on:click="openDialog(confirm.ref2)">
                 <span >{{$lang.translate.info.rename}}</span>
               </md-menu-item>
               <md-menu-item id="confirm" v-on:click="openDialog(confirm.ref1)">
                 <span >{{$lang.translate.info.delete}}</span>            
               </md-menu-item>
-              <md-menu-item>
-                <router-link v-if="botData.id"  :to="{ name: 'config', params: {id: botData.id}}">
+              <md-menu-item v-if="isConfigurable">
+                <router-link :to="{ name: 'config', params: {id: botData.id}}">
                   <span>{{$lang.translate.info.setting}}</span>
                 </router-link>
+              </md-menu-item>
+            </md-menu-content>
+            <md-menu-content v-if="parent === 'marketplace'">
+              <md-menu-item id="confirm" v-on:click="openDialog(confirm.ref4)">
+                <span >{{$lang.translate.marketplace.download}}</span>            
               </md-menu-item>
             </md-menu-content>
           </md-menu>
@@ -40,15 +48,6 @@
         </span>
       </div>
     </md-card>
-
-    <md-dialog md-open-from="#confirm" md-close-to="#confirm" ref='dialog3'>
-      <md-dialog-title>{{$lang.translate.info.marketplaceInnerBubble}}</md-dialog-title>
-
-      <md-dialog-actions>
-        <md-button class="md-primary" v-on:click="closeDialog(confirm.ref3)"> {{$lang.translate.info.cancel}}</md-button>
-        <md-button class="md-primary" v-on:click="uploadBot(botData)">{{$lang.translate.info.upload}}</md-button>
-      </md-dialog-actions>
-    </md-dialog>
     
     <md-dialog md-open-from="#confirm" md-close-to="#confirm" ref='dialog1'>
       <md-dialog-title>{{$lang.translate.info.title}}</md-dialog-title>
@@ -57,7 +56,7 @@
 
       <md-dialog-actions>
         <md-button class="md-primary" v-on:click="closeDialog(confirm.ref1)"> {{$lang.translate.info.cancel}}</md-button>
-        <md-button class="md-primary" v-on:click="deleteItem(botData)">{{$lang.translate.info.ok}}</md-button>
+        <md-button class="md-primary" v-on:click="deleteItem()">{{$lang.translate.info.ok}}</md-button>
       </md-dialog-actions>
     </md-dialog>
 
@@ -72,7 +71,7 @@
 
       <md-dialog-actions>
         <md-button class="md-primary" v-on:click="closeDialog(confirm.ref2)">{{$lang.translate.info.cancel}}</md-button>
-        <md-button class="md-primary" :disabled='!isValid' v-on:click="renameItem(botData)">{{$lang.translate.info.rename}}</md-button>
+        <md-button class="md-primary" :disabled='!isValid' v-on:click="renameItem()">{{$lang.translate.info.rename}}</md-button>
       </md-dialog-actions>
     </md-dialog>
 
@@ -81,7 +80,16 @@
 
       <md-dialog-actions>
         <md-button class="md-primary" v-on:click="closeDialog(confirm.ref3)">{{$lang.translate.info.cancel}}</md-button>
-        <md-button class="md-primary" v-on:click="uploadBot(botData)">{{$lang.translate.info.upload}}</md-button>
+        <md-button class="md-primary" v-on:click="uploadBot()">{{$lang.translate.info.upload}}</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <md-dialog md-open-from="#marketplace" md-close-to="#marketplace" ref='dialog4'>
+      <md-dialog-title>{{$lang.translate.marketplace.title}}</md-dialog-title>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" v-on:click="closeDialog(confirm.ref4)">{{$lang.translate.info.cancel}}</md-button>
+        <md-button class="md-primary" v-on:click="downloadBot()">{{$lang.translate.marketplace.download}}</md-button>
       </md-dialog-actions>
     </md-dialog>
 
@@ -93,9 +101,10 @@
 import 'vue-material/dist/vue-material.css'
 import botWelcome from '../assets/bot_orange.svg'
 import botFaq from '../assets/bot_violett.svg'
+import api from '../api/botData'
 
 export default {
-  props: ['botData'],
+  props: ['botData', 'parent'],
   data () {
     return {
       newName: '',
@@ -108,24 +117,44 @@ export default {
         cancel: 'Cancel',
         ref1: 'dialog1',
         ref2: 'dialog2',
-        ref3: 'dialog3'
+        ref3: 'dialog3',
+        ref4: 'dialog4'
       },
       isValid: false,
       aktiv: false
     }
   },
   computed: {
+    /**
+    * change bot.status text to uppercase
+    */
     isRunning () {
       return this.botData.status.toUpperCase() === 'RUNNING'
     },
+    /**
+    * If selected Bot is welcome then use Welcome-Bot Image else Faq-Bot image
+    */
     botImage () {
       return this.botData.botType === 'welcome' ? botWelcome : botFaq
     },
+    /**
+    * If selected Bot is welcome then use orange color for botType else purple
+    */
     typeColor () {
       return this.botData.botType === 'welcome' ? 'orange' : 'purple'
+    },
+    isConfigurable () {
+      if (this.botData.id !== undefined && this.botData.status !== 'running') {
+        return true
+      }
+      return false
     }
   },
   watch: {
+    /**
+    * Method to check if newName input is filled
+    * @param newName input field from Rename Dialog, check if input is not empty
+    */
     newName () {
       if (this.newName.length !== 0) {
         this.isValid = true
@@ -133,31 +162,69 @@ export default {
     }
   },
   methods: {
-    deleteItem (item) {
-      this.$store.dispatch('deleteBot', item)
+    /**
+    * Method to delete the selected Bot
+    */
+    deleteItem () {
+      this.$store.dispatch('deleteBot', this.botData)
       this.closeDialog(this.confirm.ref1)
     },
-    changeBot (item) {
-      this.$store.dispatch('changeStatus', item)
+    /**
+    * Method to turn on/off the selected Bot
+    */
+    changeBot () {
+      this.$store.dispatch('changeStatus', this.botData)
     },
-    renameItem (item) {
-      this.$store.dispatch('renameBot', [item, {
+    /**
+    * Method to rename the selected Bot
+    */
+    renameItem () {
+      this.$store.dispatch('renameBot', [this.botData, {
         name: this.newName}])
       this.closeDialog(this.confirm.ref2)
       this.newName = ''
       this.isValid = false
     },
+    /**
+    * Method to open pop up window
+    * @param ref dialog that should be open
+    */
     openDialog (ref) {
       this.$refs[ref].open()
     },
+    /**
+    * Method to close open pop up window
+    * @param ref dialog that should be open
+    */
     closeDialog (ref) {
       this.$refs[ref].close()
     },
-    uploadBot (item) {
-      console.log(item.id)
-      this.$store.dispatch('uploadBot', item)
+    /**
+    * Method to upload the selected Bot to the marketplace by
+    * changing current privacy to public
+    */
+    uploadBot () {
       this.closeDialog(this.confirm.ref3)
-      this.$router.push('/marketplace')
+      api.uploadBot(this.botData)
+      .then((response) => {
+        this.$router.push('/marketplace')
+      })
+      .catch((error) => {
+        alert(error.message)
+      })
+    },
+    downloadBot () {
+      api.addNewBot(
+        this.botData
+      )
+      .then((response) => {
+        this.$router.push('/bots')
+      })
+      .catch((err) => {
+        console.log(err.message)
+        alert('dont ask me why')
+      })
+      this.closeDialog(this.confirm.ref4)
     }
   }
 }
@@ -198,7 +265,12 @@ export default {
     text-align: center;
   }
   .typeText {
-    font-size:10px;
+    font-size:11px;
     display: block;
+    text-transform: uppercase;
   }
+  .md-dialog {
+    padding: 20px;
+  }
+  
 </style>

@@ -1,0 +1,54 @@
+{
+  "_id": "5a33b3eb0290b50005fbac94",
+  "name": "max",
+  "description": "Max",
+  "intents": [],
+  "test": "true",
+  "botType": "welcome",
+  "privacy": "private",
+  "config": {
+    "rowSelect": 0,
+    "rootSelect": 0,
+    "blocks": [
+      {
+        "title": "welcome message",
+        "id": 0,
+        "isFavorite": false,
+        "questions": [],
+        "answer": "Correct welcome message"
+      },
+      {
+        "title": "A",
+        "id": 1,
+        "isFavorite": false,
+        "questions": [],
+        "answer": "Dont mind me"
+      },
+      {
+        "title": "welcome message",
+        "id": 2,
+        "isFavorite": false,
+        "questions": [],
+        "answer": "Incorrect welcome message"
+      }
+    ],
+    "groups": [
+      {
+        "block": 0,
+        "selection": -1,
+        "children": []
+      },
+      {
+        "block": 1,
+        "selection": -1,
+        "children": [
+          {
+            "block": 2,
+            "selection": -1,
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+}

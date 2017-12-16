@@ -4,7 +4,7 @@
       <h2>{{$lang.translate.config.favoriteBlocks}}</h2>
       <h4>{{$lang.translate.config.favoriteHint}}</h4>
     </div>
-    <div draggable="true" @dragstart="setDrag(block.id)" class="blockBubble" v-for="(block, blocks) in blocks" :key="block.id">
+    <div draggable="true" @dragstart="setDrag(block.id)" class="default-shadow blockBubble" v-for="(block, blocks) in blocks" :key="block.id">
       <span>{{block.title}}</span>
     </div>
   </div>
@@ -25,7 +25,6 @@ export default {
   .blockBubble {
     line-height: 30px;
     border-radius: 15px;
-    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12);
     display: inline-block;
     padding: 7px;
     margin: 5px;

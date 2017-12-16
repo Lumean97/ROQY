@@ -23,20 +23,10 @@ const getters = {
 }
 
 const actions = {
-  uploadBot ({commit}, bot) {
-    data.uploadBot(bot => {
-      commit(types.RECEIVE_BOTS, { bot })
-    }, bot)
-  },
   getAllBots ({commit}) {
     data.getBots(bots => {
       commit(types.RECEIVE_BOTS, { bots })
     })
-  },
-  addNewBot ({commit}, bot) {
-    data.addNewBot(bot => {
-      commit(types.ADD_NEW_BOT, {bot})
-    }, bot)
   },
   deleteBot ({commit}, bot) {
     data.deleteBot(bot => {
@@ -69,9 +59,6 @@ const mutations = {
   [types.RECEIVE_BOTS] (state, { bots }) {
     state.bots = bots
   },
-  [types.ADD_NEW_BOT] (state, { bot }) {
-    state.bots.push(bot)
-  },
   [types.DETELE_BOT] (state, { bot }) {
     state.bots.splice(state.bots.indexOf(bot), 1)
   },
@@ -79,10 +66,10 @@ const mutations = {
     state.bots[state.bots.indexOf(bot)].name = bot[1].name
   },
   [types.CHANGE_STATE_TO_START] (state, { bot }) {
-    state.bots[state.bots.indexOf(bot)].status = 'Running'
+    state.bots[state.bots.indexOf(bot)].status = 'running'
   },
   [types.CHANGE_STATE_TO_STOP] (state, { bot }) {
-    state.bots[state.bots.indexOf(bot)].status = 'Stopped'
+    state.bots[state.bots.indexOf(bot)].status = 'stopped'
   },
   [types.RECEIVE_BOT_BY_ID] (state, { bot }) {
     console.log(bot)

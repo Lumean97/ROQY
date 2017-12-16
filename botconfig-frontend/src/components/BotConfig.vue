@@ -1,4 +1,11 @@
 <template>
+<div>
+  <div id="config-header" class="wrapper">
+    <div style="margin-right:20px;">
+      <button v-on:click="testBot()" class="button-top">{{$lang.translate.config.test}}</button>
+      <button v-on:click="saveData()" class="button-top">{{$lang.translate.config.save}}</button>
+    </div>
+  </div>
   <div id="conf-wrapper">
     <div id="content-wrapper" v-if="loaded">
       <div id="leftside">
@@ -14,22 +21,22 @@
           :blocks="blocks" 
           :selected="group.selection" 
           @drop="favDrop(index)" 
-          class="wrapper"></tree-view>
+          class="wrapper default-shadow"></tree-view>
         </div>
-        <div class="block-wrapper wrapper">
+        <div class="block-wrapper ">
           <block-view 
           v-on:favDrag="favStartDrag($event)" 
           :blocks="favorites">
           </block-view>
         </div>
       </div>
-      <div class="block-config-wrapper wrapper">
+      <div class="block-config-wrapper ">
         <block-config 
         v-on:setTitle="setBlockTitle(selectedBlock.id, $event)" 
         v-on:newQuestion="blockAddQuestion(selectedBlock.id, $event)" 
         v-on:setAnswer="setAnswer(selectedBlock.id,$event)" 
         v-on:deleteQuestion="blockRemoveQuestion(selectedBlock.id,$event)" 
-        v-on:favorite="favoriteBlock(selectedBlock.id)" 
+        v-on:favorite="blockToggleFavorite(selectedBlock.id)" 
         v-on:delete="deleteSelected()" 
         v-on:saveData="saveData()" 
         v-on:testBot="testBot()" 
@@ -40,6 +47,7 @@
       <p>LOADING</p>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -49,6 +57,7 @@ import blockView from './Config/BlockView.vue'
 import treeView from './Config/TreeView.vue'
 import api from '../api/botData'
 import axios from 'axios'
+import templates from './Config/templates'
 
 export default {
   props: ['id'],
@@ -105,12 +114,6 @@ export default {
       return favs
     },
     /**
-     * Workaround for translate not working in tests. Used to stub the translation.
-     */
-    defaultTitle () {
-      return this.$lang.translate.config.unnamedBlock
-    },
-    /**
      * Return the currently selected block or null if there is no selected block
      */
     selectedBlock () {
@@ -150,7 +153,7 @@ export default {
     * Adds a new block to row defined by groupID and returns its new id
     */
     addNewBlock (groupID) {
-      let block = {title: this.defaultTitle, id: this.blockIDCount++, isFavorite: false, questions: [], answer: ''}
+      let block = {title: this.$lang.translate.config.unnamedBlock, id: this.blockIDCount++, isFavorite: false, questions: [], answer: ''}
       this.blocks.push(block)
       if (groupID === 0) {
         this.groups.push({'block': block.id, 'selection': -1, 'children': []})
@@ -197,10 +200,10 @@ export default {
     /*
      * Adds the block to favorites
      */
-    favoriteBlock (blockID, setFavorite = true) {
+    blockToggleFavorite (blockID) {
       let block = this.getBlock(blockID)
       if (block !== null) {
-        block.isFavorite = setFavorite
+        block.isFavorite = !block.isFavorite
       }
     },
     /**
@@ -251,6 +254,9 @@ export default {
      * Load the config data from a json string
      */
     loadConfig (json) {
+      if (json === undefined || json === null) {
+        return
+      }
       this.rowSelect = json.rowSelect
       this.rootSelect = json.rootSelect
       this.blocks = json.blocks
@@ -290,7 +296,6 @@ export default {
             this.$router.push('/bots')
           }
           this.$store.commit('resetBot')
-          console.log('here' + this.$store.getters.getbot)
         })
         .catch(() => {
           alert('Failed to upload your bot. Please try again.')
@@ -321,7 +326,17 @@ export default {
       api.getBot(this.id)
       .then((data) => {
         this.loaded = true
-        this.loadConfig(data.config)
+        if (data.config !== null) {
+          this.loadConfig(data.config)
+        } else {
+          // TODO : Templates should be loaded from backend instead
+          console.log(templates.faq)
+          if (data.botType === 'welcome') {
+            this.loadConfig(templates.welcome)
+          } else if (data.botType === 'faq') {
+            this.loadConfig(templates.faq)
+          }
+        }
       })
       .catch((err) => {
         console.error(err)
@@ -333,6 +348,24 @@ export default {
 </script>
 
 <style scoped>
+#config-header {
+  width: 100%;
+  padding: 3px;
+  display: flex;
+  flex-direction: row-reverse;
+}
+.button-top {
+  background-color: orange;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  margin-top: 2px;
+  margin-right: 3px;
+}
 #conf-wrapper {
   display: flex;
   height: 830px;
@@ -348,10 +381,11 @@ export default {
   height: 80%;
   padding: 25px;
   overflow-x: auto;
+  white-space: nowrap;
 }
 
 .block-wrapper {
-  height: 20%;
+  height: auto;
 }
 
 #leftside {
@@ -361,8 +395,8 @@ export default {
 
 .wrapper {
   background-color: white;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)
 }
+
 .group-wrapper {
   height: 80%;
 }
@@ -374,24 +408,16 @@ export default {
 .block-config-wrapper {
   height: 100%;
   flex: 1;
+  border-left: .5px solid #d4d6d8;
 }
 
 .block-wrapper {
-  height: 20%;
+  height: 19.4%;
+  border-top: 2px solid #d4d6d8;
 }
 
 #leftside {
   width: 66%;
   height: 100%;
-}
-
-.wrapper {
-  background-color: white;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)
-}
-
-.block-config-wrapper {
-  height: 100%;
-  flex: 1;
 }
 </style>

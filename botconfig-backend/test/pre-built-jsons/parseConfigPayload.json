@@ -1,259 +1,142 @@
 {
-  "_id": "5a316f7f231074000707f508",
-  "name": "Tester1",
-  "description": "Test",
+  "_id": "5a33b3eb0290b50005fbac94",
+  "name": "max",
+  "description": "Max",
   "intents": [],
   "test": "true",
-  "botType": "faq",
+  "botType": "welcome",
   "privacy": "private",
   "config": {
-    "rowSelect": 2,
+    "rowSelect": 3,
     "rootSelect": 2,
     "blocks": [
       {
-        "title": "Unnamed Block",
+        "title": "A",
         "id": 0,
         "isFavorite": false,
         "questions": [],
         "answer": ""
       },
       {
-        "title": "Unnamed Block",
+        "title": "B",
         "id": 1,
         "isFavorite": false,
         "questions": [],
         "answer": ""
       },
       {
-        "title": "Unnamed Block",
+        "title": "C",
         "id": 2,
         "isFavorite": false,
         "questions": [],
         "answer": ""
       },
       {
-        "title": "Unnamed Block",
+        "title": "D",
         "id": 3,
         "isFavorite": false,
         "questions": [],
         "answer": ""
       },
       {
-        "title": "Unnamed Block",
+        "title": "E",
         "id": 4,
         "isFavorite": false,
         "questions": [],
         "answer": ""
       },
       {
-        "title": "Testblock",
+        "title": "F",
         "id": 5,
         "isFavorite": false,
-        "questions": [
-          "Ich bin ein",
-          "Test"
-        ],
-        "answer": "Korrekt!"
+        "questions": [],
+        "answer": ""
       },
       {
-        "title": "Unnamed Block",
+        "title": "G",
         "id": 6,
         "isFavorite": false,
         "questions": [],
         "answer": ""
       },
       {
-        "title": "Unnamed Block",
+        "title": "H",
         "id": 7,
         "isFavorite": false,
         "questions": [],
         "answer": ""
       },
       {
-        "title": "Unnamed Block",
+        "title": "I",
         "id": 8,
         "isFavorite": false,
         "questions": [],
         "answer": ""
       },
       {
-        "title": "Unnamed Block",
+        "title": "Test",
         "id": 9,
         "isFavorite": false,
-        "questions": [],
-        "answer": ""
-      },
-      {
-        "title": "Unnamed Block",
-        "id": 10,
-        "isFavorite": false,
-        "questions": [],
-        "answer": ""
-      },
-      {
-        "title": "Unnamed Block",
-        "id": 11,
-        "isFavorite": false,
-        "questions": [],
-        "answer": ""
-      },
-      {
-        "title": "Unnamed Block",
-        "id": 12,
-        "isFavorite": false,
-        "questions": [],
-        "answer": ""
-      },
-      {
-        "title": "Unnamed Block",
-        "id": 13,
-        "isFavorite": false,
-        "questions": [],
-        "answer": ""
-      },
-      {
-        "title": "Unnamed Block",
-        "id": 14,
-        "isFavorite": false,
-        "questions": [],
-        "answer": ""
-      },
-      {
-        "title": "Unnamed Block",
-        "id": 15,
-        "isFavorite": false,
-        "questions": [],
-        "answer": ""
-      },
-      {
-        "title": "Unnamed Block",
-        "id": 16,
-        "isFavorite": false,
-        "questions": [],
-        "answer": ""
-      },
-      {
-        "title": "Unnamed Block",
-        "id": 17,
-        "isFavorite": false,
-        "questions": [],
-        "answer": ""
-      },
-      {
-        "title": "Unnamed Block",
-        "id": 18,
-        "isFavorite": false,
-        "questions": [],
-        "answer": ""
-      },
-      {
-        "title": "Unnamed Block",
-        "id": 19,
-        "isFavorite": false,
-        "questions": [],
-        "answer": ""
+        "questions": [
+          "Wer",
+          "Wie",
+          "Was"
+        ],
+        "answer": "Warum"
       }
     ],
     "groups": [
       {
         "block": 0,
-        "selection": 1,
-        "children": [
-          {
-            "block": 3,
-            "selection": 0,
-            "children": [
-              {
-                "block": 5,
-                "selection": -1,
-                "children": []
-              },
-              {
-                "block": 6,
-                "selection": -1,
-                "children": []
-              },
-              {
-                "block": 7,
-                "selection": -1,
-                "children": []
-              }
-            ]
-          },
-          {
-            "block": 4,
-            "selection": 1,
-            "children": [
-              {
-                "block": 8,
-                "selection": -1,
-                "children": []
-              },
-              {
-                "block": 9,
-                "selection": -1,
-                "children": [
-                  {
-                    "block": 12,
-                    "selection": -1,
-                    "children": []
-                  },
-                  {
-                    "block": 13,
-                    "selection": -1,
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "block": 10,
-                "selection": -1,
-                "children": []
-              },
-              {
-                "block": 11,
-                "selection": -1,
-                "children": []
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "block": 1,
         "selection": -1,
         "children": [
           {
-            "block": 14,
+            "block": 1,
+            "selection": -1,
+            "children": [
+              {
+                "block": 2,
+                "selection": -1,
+                "children": []
+              }
+            ]
+          },
+          {
+            "block": 3,
             "selection": -1,
             "children": []
           },
           {
-            "block": 15,
+            "block": 7,
+            "selection": -1,
+            "children": []
+          },
+          {
+            "block": 5,
             "selection": -1,
             "children": []
           }
         ]
       },
       {
-        "block": 2,
+        "block": 4,
+        "selection": -1,
+        "children": []
+      },
+      {
+        "block": 5,
         "selection": 0,
         "children": [
           {
-            "block": 16,
-            "selection": 1,
+            "block": 6,
+            "selection": 0,
             "children": [
               {
-                "block": 17,
-                "selection": -1,
-                "children": []
-              },
-              {
-                "block": 18,
-                "selection": -1,
+                "block": 8,
+                "selection": 0,
                 "children": [
                   {
-                    "block": 19,
+                    "block": 9,
                     "selection": -1,
                     "children": []
                   }
@@ -267,6 +150,6 @@
   },
   "account": "ed2ff1a97f924b8e8a1402e6700a8bf4",
   "img": "../assets/bot.png",
-  "id": "1513189247525id",
+  "id": "1513337835844id",
   "status": "test"
 }

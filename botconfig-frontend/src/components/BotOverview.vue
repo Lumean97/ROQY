@@ -3,27 +3,28 @@
     <headermenu></headermenu>
     <div class="md-toolbar">
       <span style="margin-right:5px">{{$lang.translate.overview.sortby}}</span>      
-      <md-field class="toolbar-input">
+      <md-field style="border-radius:20px;" class="toolbar-input">
         <md-select v-model="sortBy">
             <md-option value="date">{{$lang.translate.overview.date}}</md-option>
             <md-option value="type">{{$lang.translate.overview.type}}</md-option>
         </md-select>
       </md-field>
-      <md-field style="border-radius:16px;" class="toolbar-input">
-         <input v-model="search" :placeholder="$lang.translate.overview.search" style="padding:5px;padding-left:20px;"></input>
+      <md-field class="toolbar-input">
+        <input v-model="search" :placeholder="$lang.translate.overview.search" style="padding:5px;padding-left:20px;"></input>
+        <md-icon style="margin-right:10px;">search</md-icon>
       </md-field>
-      <router-link style="color:white;border-radius:46px;" tag="md-button" to="/newBot" class="md-raised md-primary">{{$lang.translate.overview.create}}</router-link>
+      <router-link style="text-transform: uppercase;"class="default-btn" tag="button" to="/newBot">{{$lang.translate.overview.create}}</router-link>
     </div>
     <md-layout class="overview-wrapper">
       <md-layout style="flex:unset;" v-for="(bot, bots) in bots" :key="bot.id">
-        <bot-info v-if="matchSearch(bot.name)" :botData="bot"></bot-info>
+        <bot-info v-if="matchSearch(bot.name)" :botData="bot" :parent="'overview'"></bot-info>
       </md-layout>
       <md-layout style="flex:unset;">
-        <div class="inline-newbot">
-          <router-link tag="div" to="/newBot" class="inline-newbot-btn">
-            <span class="inline-newbot-plus">+</span>
+          <router-link tag="div" to="/newBot" class="inline-newbot default-shadow">
+            <div class="inline-newbot-btn">
+              <span class="inline-newbot-plus">+</span>
+            </div>
           </router-link>
-        </div>
       </md-layout>
     </md-layout>
   </div>
@@ -42,9 +43,16 @@ export default {
     }
   },
   computed: {
+    /**
+    * Returns all Bots saved in store
+    */
     bots () {
       let sortBy = this.sortBy
       return this.$store.getters.getbots.sort(
+        /**
+        * Returns sorted Bots depending on each criteria
+        * @param a,b Bots we receive from the store
+        */
         function (a, b) {
           switch (sortBy) {
             case 'date':
@@ -55,7 +63,6 @@ export default {
                 return -1
               }
               return 0
-
             case 'type':
               if (a.type > b.type) {
                 return 1
@@ -77,6 +84,10 @@ export default {
     this.$store.dispatch('getAllBots')
   },
   methods: {
+    /**
+    * Method to search for a spezific Bot
+    * @param input Name we are searching for
+    */
     matchSearch (input) {
       if (this.search === '') {
         return true
@@ -95,13 +106,6 @@ export default {
     margin: 0 auto;
   }
 
-  .md-warn {
-    border: dashed 1px #FF6600;
-    border-radius:40px;
-    font-family:'verdana';
-    font-weight:600;
-  }
-
   div.md-toolbar {
     justify-content: flex-end;
     align-items: center;
@@ -110,6 +114,7 @@ export default {
   .toolbar-input {
     background-color: white;
     margin: 10px;
+    border-radius:16px;
   }
 
   .inline-newbot {
@@ -119,6 +124,10 @@ export default {
     max-height: 360px;
     display: inline-flex;
     align-items: center;
+    border: 3px dashed orange;
+    border-radius:7px;
+    margin: 14px;
+    cursor: pointer;
   }
   
  .inline-newbot-btn {
@@ -127,7 +136,6 @@ export default {
     background-color: orange;
     border-radius: 32px;
     margin: auto;
-    cursor: pointer;
  }
 
  .inline-newbot-plus {
@@ -136,5 +144,9 @@ export default {
     cursor: pointer;
     color: white;
     font-weight: 200;
+ }
+
+ button.default-btn {
+   padding: 5px 10px;
  }
 </style>
