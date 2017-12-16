@@ -347,7 +347,7 @@ router.post('/bot', function (req, clientResponse) {
                     let res = {
                         botId:appId
                     };
-                    ncmd.run('docker run -e BOT_ID="' + appId + '" runtime');
+                    //ncmd.run('docker run -e BOT_ID="' + appId + '" -e MONGO_URI=process.env.MONGO_URI runtime');
                     // TODO Start Docker Image with appId from here!
                     console.log("Successfully wrote to DB!");
                     responseToClient(clientResponse, 201, false, messages.botHasBeenCreated, res);
@@ -445,18 +445,22 @@ function createLivepersonUser(bot, accountId){
                     })
                 })
         }else {
+            console.log("Try FAQ");
             requestPromise(options)
                 .then(response => {
+                    console.log("Logged in");
                     options.headers.Authorization = "Bearer " + response.bearer;
                     options.uri = livePersonSkillDomain;
                     options.body = skillPayload;
                     requestPromise(options).then(response => {
+                        console.log("Skill done");
                         createUserPayload.skillIds = [response.id];
                         skillId = response.id;
                         options.uri = livePersonAccountDomain;
                         options.body = createUserPayload;
                         requestPromise(options)
                             .then(response => {
+                                console.log("All done");
                                 resolve(skillId);
                             })
                     })
@@ -492,6 +496,7 @@ function deleteLivepersonUser(bot, accountId){
             }).then(() => requestPromise(options))
             .then(response => {
                 let accountId = undefined;
+                console.log(response);
                 for(let i = 0; i<response.length && accountId === undefined; i++){
                     if(response[i].loginName === bot.name){
                         accountId = response[i].id;
@@ -526,6 +531,7 @@ router.get('/bot/public', function(req, clientResponse){
         responseToClient(clientResponse, 200, false, messages.botsFound, retval);
     });
 });
+
 /**
  * Delete
  * Deletes the specified Bot.
@@ -572,22 +578,19 @@ router.delete("/bot/:id", function (req, clientResponse) {
             }
 
             else {
-                requestPromise(options).then(res => {
-                    dbcon.readFromDB({
-                        botId: id
-                    }).then(response => {
+                requestPromise(options).then(response => {
                         bot = response;
                         dbcon.deleteFromDB({
                             botId: id
                         }).then(success => {
                             if(success){
+                                console.log("Dleete now from LP");
                                 deleteLivepersonUser(bot, auth);
                                 responseToClient(clientResponse, 200, false, messages.botDeleted);
                             }else{
                                 responseToClient(clientResponse, 404, true, messages.botNotFound);
                             }
                         });
-                    })
                 }).catch(err => {
                     responseToClient(clientResponse, 400, true, err.message);
                 })

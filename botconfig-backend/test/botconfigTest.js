@@ -7,7 +7,7 @@ const fs = require('fs');
 let should = chai.should();
 const backend = require('../routes/botconfig')
 let server;
-const authKey = 'ed2ff1a97f924b8e8a1402e6700a8bf4';
+const authKey = '23625217';
 
 chai.use(chaiHttp);
 
@@ -40,8 +40,7 @@ testBot = {
 /**
  * Test for the post method to insert a bot
  */
-describe('/POST botconfig', () => {
-
+describe('/POST botconfig', (suite) => {
     it('should insert a bot', (done) => {
 
         let testBot = { name: 'pinkSparkles', description: 'Titty streamer on twitch.tv', test: true, privacy: 'public', botType: 'faq', intents: [] };
@@ -67,6 +66,54 @@ describe('/POST botconfig', () => {
                 }
             });
     })
+    /*
+    it('should insert REAL bot', (done) => {
+        let testBot = { name: 'pinkSparklesforLUIS', description: 'Titty streamer on twitch.tv', privacy: 'public', botType: 'faq', intents: [] };
+        chai.request(server)
+            .post('/bot')
+            .set('Authorization', authKey)
+            .send(testBot)
+            .end((err, res) => {
+                if (err) {
+                    console.log('pinkSparkles is a Zicke and dont wants to get inserted')
+                }
+                else {
+                    res.should.have.status(201)
+                    chai.request(server)
+                        .delete('/bot/' + res.body.extra.botId)
+                        .set('Authorization', authKey)
+                        .send()
+                        .end((err, res) => {
+                            if (err) console.log('pinkSparkles isnt banned yet!')
+                            done();
+                        })
+                }
+            });
+    });
+    it('should insert REAL bot welcome', (done) => {
+        let testBot = { name: 'pinkSparklesforLUIS2', description: 'Titty streamer on twitch.tv', privacy: 'public', botType: 'welcome', intents: [] };
+        chai.request(server)
+            .post('/bot')
+            .set('Authorization', authKey)
+            .send(testBot)
+            .end((err, res) => {
+                if (err) {
+                    console.log('pinkSparkles is a Zicke and dont wants to get inserted')
+                }
+                else {
+                    res.should.have.status(201)
+                    chai.request(server)
+                        .delete('/bot/' + res.body.extra.botId)
+                        .set('Authorization', authKey)
+                        .send()
+                        .end((err, res) => {
+                            if (err) console.log('pinkSparkles isnt banned yet!')
+                            done();
+                        })
+                }
+            });
+    });
+*/
 })
 
 /**
