@@ -336,7 +336,7 @@ router.post('/bot', function (req, clientResponse) {
             .then(response => {
                 if(response !== undefined)
                     console.log("User with Skill ID " + response + " has been created!");
-                    userData.skill = response;
+                userData.skill = response;
             })
             .then(() =>dbcon.writeToDB({
                 "data": userData
@@ -346,7 +346,8 @@ router.post('/bot', function (req, clientResponse) {
                     let res = {
                         botId:appId
                     };
-                    ncmd.run('docker run -e BOT_ID="' + appId + '" runtime');
+                    let containerName = "runtime_container_" + userData.name;
+                    ncmd.run('docker run -e BOT_ID="' + appId + '" -e name="' + containerName + '" -e MONGO_URI="' + process.env.MONGO_URI + '" --name "' + containerName + '" -d runtime && docker network connect sepravenclaw_default "'  + containerName + '"');
                     // TODO Start Docker Image with appId from here!
                     console.log("Successfully wrote to DB!");
                     responseToClient(clientResponse, 201, false, messages.botHasBeenCreated, res);
@@ -391,21 +392,21 @@ router.post('/bot', function (req, clientResponse) {
 
 router.post("/test", function(req, res){
     if(updateIntents([{
-        "id": 0,
-        "name": "password_trouble",
-        "answer": "I will forward you to the password FAQ Bot",
-        "nextIntents": [-1],
-        "forwardTo": "1eed14b1-7bec-4752-a2a2-fc26b146d6ec",
-        "questions": ["I have problems with my password!", "I need a new password", "password", "password problems"]
-    },
-        {
-            "id": 1,
-            "name": "Account_problem",
-            "answer": "Describe you problem.",
-            "nextIntents": [0],
-            "questions": ["I have a problem with my account", "My account is locked", "Account"]
-        }
-    ], "de88eb67-172c-432a-a010-1b5e25c6a35b")){
+            "id": 0,
+            "name": "password_trouble",
+            "answer": "I will forward you to the password FAQ Bot",
+            "nextIntents": [-1],
+            "forwardTo": "1eed14b1-7bec-4752-a2a2-fc26b146d6ec",
+            "questions": ["I have problems with my password!", "I need a new password", "password", "password problems"]
+        },
+            {
+                "id": 1,
+                "name": "Account_problem",
+                "answer": "Describe you problem.",
+                "nextIntents": [0],
+                "questions": ["I have a problem with my account", "My account is locked", "Account"]
+            }
+        ], "de88eb67-172c-432a-a010-1b5e25c6a35b")){
         responseToClient(res, 200, false, "Done", "WUHU");
     }else{
         responseToClient(res, 400, true, "Not done", "Moah");
@@ -463,7 +464,7 @@ function createLivepersonUser(bot, accountId){
                     options.uri = livePersonAccountDomain;
                     options.body = createUserPayload;
                     requestPromise(options).then(response => {
-                                resolve(response.id);
+                        resolve(response.id);
 
                     })
                 })
@@ -666,7 +667,7 @@ router.put('/bot/:id', function(req, clientResponse){
 });
 
 /**
- * Returns a bot by ID 
+ * Returns a bot by ID
  */
 router.get('/bot/:id', function(req, clientResponse){
     let auth = req.header("Authorization");
@@ -683,7 +684,7 @@ router.get('/bot/:id', function(req, clientResponse){
             responseToClient(clientResponse, 200, false, messages.botFound, res)
         } else {
             responseToClient(clientResponse, 404, true, messages.botNotFound)
-        }        
+        }
     })
 })
 /**
@@ -698,9 +699,16 @@ router.put('/bot/:id/config', function(req, clientResponse){
     }
     let id = req.params.id;
     let body = req.body;
-    dbcon.writeConfig(body, id);
-
-    responseToClient(clientResponse, 200, false, messages.botUpdated);
+    dbcon.writeConfig(body, id)
+        .then(success => {
+            dbcon.readFromDB({botId: id}).then(res => {
+                router.parseConfigTointents(res);
+                updateIntents(res, id);
+                dbcon.writeToDB({botId: id, data:res});
+                console.log("DONE CONFIG");
+                responseToClient(clientResponse, 200, false, messages.botUpdated, res);
+            })
+        });
 })
 
 /**
@@ -741,12 +749,12 @@ router.put('/bot/:id/privacy', function(req, clientResponse){
         return;
     }
     dbcon.setPrivacy(id, privacy)
-    .then(function () {
-        responseToClient(clientResponse, 200, false, messages.privacyUpdated);
-    })
-    .catch(function () {
-        responseToClient(clientResponse, 500, true, messages.botNotFound);
-    })
+        .then(function () {
+            responseToClient(clientResponse, 200, false, messages.privacyUpdated);
+        })
+        .catch(function () {
+            responseToClient(clientResponse, 500, true, messages.botNotFound);
+        })
 });
 
 /**
@@ -869,56 +877,56 @@ function updateIntents(intents, botId){
             options.uri = "https://westus.api.cognitive.microsoft.com/luis/api/v2.0/apps/" + botId + "/versions/1.0/examples";
             options.body = [];
             for(let i = 0; i<intents.length; i++){
-                    for(let j = 0; j<intents[i].questions.length; j++) {
-                        options.body.push({
-                            text: intents[i].questions[j],
-                            intentName: intents[i].name,
-                            entityLabels: []
-                        })
-                    }
+                for(let j = 0; j<intents[i].questions.length; j++) {
+                    options.body.push({
+                        text: intents[i].questions[j],
+                        intentName: intents[i].name,
+                        entityLabels: []
+                    })
+                }
             }
             requestPromise(options);
-    }).delay(waitTimeForLUIS*2)
+        }).delay(waitTimeForLUIS*2)
         .then(() => {
             options.uri = "https://westus.api.cognitive.microsoft.com/luis/api/v2.0/apps/" + botId + "/versions/1.0/train";
             options.body = {};
             requestPromise(options);
         }).then(() => {
-        options.method = "GET";
-        let done = false;
-        return new Promise(function (resolve) {
-            let waitUntilIntentsCreatedIntervall = setInterval(() => {
-                if(done)return;
-                requestPromise(options)
-                    .then(res => {
-                        let trainingDone = true;
-                        for (let i = 0; i < res.length && trainingDone; i++) {
-                            if (res[i].details.statusId === 1) {
-                                // TODO maybe retrain?
-                                throw new Error(messages.errorWhileCreating, 409);
+            options.method = "GET";
+            let done = false;
+            return new Promise(function (resolve) {
+                let waitUntilIntentsCreatedIntervall = setInterval(() => {
+                    if(done)return;
+                    requestPromise(options)
+                        .then(res => {
+                            let trainingDone = true;
+                            for (let i = 0; i < res.length && trainingDone; i++) {
+                                if (res[i].details.statusId === 1) {
+                                    // TODO maybe retrain?
+                                    throw new Error(messages.errorWhileCreating, 409);
+                                }
+                                if (res[i].details.statusId !== 0) {
+                                    trainingDone = false;
+                                }
                             }
-                            if (res[i].details.statusId !== 0) {
-                                trainingDone = false;
+                            if (trainingDone) {
+                                done = true;
+                                clearInterval(waitUntilIntentsCreatedIntervall);
+                                options.uri = "https://westus.api.cognitive.microsoft.com/luis/api/v2.0/apps/" + botId + "/publish";
+                                options.method = "POST";
+                                options.body = {
+                                    "versionId": "1.0",
+                                    "isStaging": false,
+                                    "region": "westus"
+                                };
+                                requestPromise(options).then(res => {
+                                    resolve(true);
+                                })
                             }
-                        }
-                        if (trainingDone) {
-                            done = true;
-                            clearInterval(waitUntilIntentsCreatedIntervall);
-                            options.uri = "https://westus.api.cognitive.microsoft.com/luis/api/v2.0/apps/" + botId + "/publish";
-                            options.method = "POST";
-                            options.body = {
-                                "versionId": "1.0",
-                                "isStaging": false,
-                                "region": "westus"
-                            };
-                            requestPromise(options).then(res => {
-                                resolve(true);
-                            })
-                        }
-                    })
-            }, waitTimeForLUIS)
+                        })
+                }, waitTimeForLUIS)
+            })
         })
-    })
         .then(res => {
             return true;
         })
@@ -929,7 +937,7 @@ function updateIntents(intents, botId){
 function addToIntents(intents, children, blocks, intentIDCount) {
     let nextIntents = [];
     for (const group of children) {
-        let block = blocks.get(group.block);   
+        let block = blocks.get(group.block);
         let intent = {
             id: intentIDCount.count++,
             name: block.title,
@@ -947,6 +955,7 @@ function addToIntents(intents, children, blocks, intentIDCount) {
 router.parseConfigTointents = function(bot){
     let config = bot.config;
     let welcomeMsg = '';
+    bot.intents = [];
     if(config === null){
         return;
     }
@@ -967,6 +976,10 @@ router.parseConfigTointents = function(bot){
     };
 
     bot.originIntentState.nextIntents = addToIntents(bot.intents, config.groups, blockMap, {count: 0});
+    console.log("SORT NOW NEW");
+    bot.intents.sort(function(a, b){
+        return a.id - b.id;
+    })
 };
 
 /**
