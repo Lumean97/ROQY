@@ -1,13 +1,13 @@
 
     {
-      "_id": "5a316f7f231074000707f508",
-      "name": "Tester1",
+      "_id": "5a33b3eb0290b50005fbac94",
+      "name": "max",
       "originIntentState": {
       "id": -1,
       "answer": "Placeholder Welcome Message",
       "nextIntents": [0, 1, 2]
     },
-      "description": "Test",
+      "description": "Max",
       "intents": [
         {
           "name": "Unnamed Block",
@@ -154,7 +154,7 @@
         }
       ],
       "test": "true",
-      "botType": "faq",
+      "botType": "welcome",
       "privacy": "private",
       "config": {
         "rowSelect": 2,
@@ -417,6 +417,6 @@
       },
       "account": "ed2ff1a97f924b8e8a1402e6700a8bf4",
       "img": "../assets/bot.png",
-      "id": "1513189247525id",
+      "id": "1513337835844id",
       "status": "test"
     }

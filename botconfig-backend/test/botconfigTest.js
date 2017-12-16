@@ -7,7 +7,7 @@ const fs = require('fs');
 let should = chai.should();
 const backend = require('../routes/botconfig')
 let server;
-const authKey = 'ed2ff1a97f924b8e8a1402e6700a8bf4';
+const authKey = '23625217';
 
 chai.use(chaiHttp);
 
@@ -40,8 +40,7 @@ testBot = {
 /**
  * Test for the post method to insert a bot
  */
-describe('/POST botconfig', () => {
-
+describe('/POST botconfig', (suite) => {
     it('should insert a bot', (done) => {
 
         let testBot = { name: 'pinkSparkles', description: 'Titty streamer on twitch.tv', test: true, privacy: 'public', botType: 'faq', intents: [] };
@@ -62,11 +61,59 @@ describe('/POST botconfig', () => {
                         .send(testBot)
                         .end((err, res) => {
                             if (err) console.log('pinkSparkles isnt banned yet!')
+                            done();
                         })
                 }
-                done();
             });
     })
+    /*
+    it('should insert REAL bot', (done) => {
+        let testBot = { name: 'pinkSparklesforLUIS', description: 'Titty streamer on twitch.tv', privacy: 'public', botType: 'faq', intents: [] };
+        chai.request(server)
+            .post('/bot')
+            .set('Authorization', authKey)
+            .send(testBot)
+            .end((err, res) => {
+                if (err) {
+                    console.log('pinkSparkles is a Zicke and dont wants to get inserted')
+                }
+                else {
+                    res.should.have.status(201)
+                    chai.request(server)
+                        .delete('/bot/' + res.body.extra.botId)
+                        .set('Authorization', authKey)
+                        .send()
+                        .end((err, res) => {
+                            if (err) console.log('pinkSparkles isnt banned yet!')
+                            done();
+                        })
+                }
+            });
+    });
+    it('should insert REAL bot welcome', (done) => {
+        let testBot = { name: 'pinkSparklesforLUIS2', description: 'Titty streamer on twitch.tv', privacy: 'public', botType: 'welcome', intents: [] };
+        chai.request(server)
+            .post('/bot')
+            .set('Authorization', authKey)
+            .send(testBot)
+            .end((err, res) => {
+                if (err) {
+                    console.log('pinkSparkles is a Zicke and dont wants to get inserted')
+                }
+                else {
+                    res.should.have.status(201)
+                    chai.request(server)
+                        .delete('/bot/' + res.body.extra.botId)
+                        .set('Authorization', authKey)
+                        .send()
+                        .end((err, res) => {
+                            if (err) console.log('pinkSparkles isnt banned yet!')
+                            done();
+                        })
+                }
+            });
+    });
+*/
 })
 
 /**
@@ -125,45 +172,88 @@ describe('/DELETE botconfig', () => {
     })
 })
 
-describe('/PUT intentname', () => {
+describe('/PUT rename', () => {
+    let testBot = {
+        name : 'testBotBefore',
+        description : 'Im a testobject to test the start-stop-technology',
+        test : true,
+        privacy : 'public',
+        botType : 'faq',
+        intents : []
+    };
+    before((done) => {
+    chai.request(server)
+        .post('/bot')
+                .set('Authorization', authKey)
+                .send(testBot)
+                .end((err, res) => {
+                    testBot.id = res.body.extra.botId;
+                    done();
+                })
+        });
 
-    let testBot = { 'name': 'botMitNamenlosenIntents' };
-    let intentRequest = { 'data': { 'intents': { 'name': '' } } }
-    let botId
-
-
-    beforeEach(function (done) {
+    it('should get an error due no name', (done) => {
         chai.request(server)
-            .post('/bot')
-            .set('Authorization', authKey)
-            .send(testBot)
-            .end((err, res) => {
-                botId = res.body.Id;
-                done();
-            });
-    })
-
-    afterEach(function (done) {
-        chai.request(server)
-            .delete('/bot/' + botId)
+            .put('/bot/' + testBot.id + '/rename')
             .set('Authorization', authKey)
             .send()
             .end((err, res) => {
-                done()
-            });
+                res.should.have.status(406);
+                done();
+            })
+    });
+
+    it('should error due false bot', (done) => {
+        chai.request(server)
+            .put('/bot/' + undefined + '/rename')
+            .set('Authorization', authKey)
+            .send({name:"Test"})
+            .end((err, res) => {
+                res.should.have.status(404);
+                done();
+            })
+    });
+
+    it('should error due no Auth', (done) => {
+        chai.request(server)
+            .put('/bot/' + testBot.id + '/rename')
+            .send()
+            .end((err, res) => {
+                res.should.have.status(401);
+                done();
+            })
     })
 
-    it('should deny the request to put a nameless intent to testBot', (done) => {
+    it('should rename the bot', (done) => {
+        let newName = "new name"
         chai.request(server)
-            .put('/bot/' + botId)
+            .put('/bot/' + testBot.id + '/rename')
             .set('Authorization', authKey)
-            .send(intentRequest)
+            .send({name:newName})
             .end((err, res) => {
-                res.should.not.have.status(200);
+                res.should.have.status(200);
+                chai.request(server)
+                    .get('/bot/' + testBot.id)
+                    .set('Authorization', authKey)
+                    .send()
+                    .end((err, res) => {
+                        assert.equal(res.body.extra.name, newName);
+                        done();
+                    });
+            })
+    });
+    after((done) => {
+        console.log("Last")
+        chai.request(server)
+            .delete('/bot/' + testBot.id)
+            .set('Authorization', authKey)
+            .send(testBot)
+            .end((err, res) => {
+                if (err) console.log('pinkSparkles isnt banned yet!')
                 done();
-            });
+            })
     })
-})
+});
 
 describe('PUT start/stop', () => {
 
@@ -327,5 +417,322 @@ describe('parse config to intents', () => {
         backend.parseConfigTointents(parseConfigPayload);
         parseConfigPayload.intents.should.have.lengthOf(3);
         parseConfigPayload.originIntentState.answer.should.equal('Correct welcome message');
+    });
+    it('should come the correct config with empty intents', (done) => {
+        let parseConfigExpected = JSON.parse(fs.readFileSync(__dirname + '/pre-built-jsons/parseConfigExpected.json', 'utf8'));
+        let parseConfigPayload = JSON.parse(fs.readFileSync(__dirname + '/pre-built-jsons/parseConfigPayload.json', 'utf8'));
+        parseConfigExpected.intents = [];
+        parseConfigExpected.config = null;
+        parseConfigExpected.originIntentState.nextIntents = [];
+        parseConfigPayload.config = null;
+        backend.parseConfigTointents(parseConfigPayload)
+        assert.deepEqual(parseConfigPayload, parseConfigExpected);
+        done();
+    });
+});
+
+describe('PUT config', () => {
+    let testBot = {
+        name : 'TestBot',
+        description : '',
+        test : true,
+        privacy : 'public',
+        botType : 'faq',
+        config: null,
+        intents : []
+    };
+    before((done) => {
+        chai.request(server)
+            .post('/bot')
+            .set('Authorization', authKey)
+            .send(testBot)
+            .end((err, res) => {
+                res.should.have.status(200);
+                testBot.id = res.body.extra.botId;
+                done();
+            })
+    });
+    it('should error config due no auth', (done) => {
+        chai.request(server)
+            .put('/bot/' + testBot.id + '/config')
+            .send()
+            .end((err, res) => {
+                res.should.have.status(401);
+                done();
+            })
+    });
+
+    it('should update config', (done) => {
+        testBot.config = {
+            "rowSelect": 2,
+            "rootSelect": 2,
+            "blocks":[],
+            "groups":[]
+        };
+        chai.request(server)
+            .put('/bot/' + testBot.id + '/config')
+            .set('Authorization', authKey)
+            .send(testBot.config)
+            .end((err, res) => {
+                res.should.have.status(200);
+                chai.request(server)
+                    .get('/bot/' + testBot.id)
+                    .set('Authorization', authKey)
+                    .send()
+                    .end((err, res) => {
+                        setTimeout(() => {
+                            console.log(res.body);
+                            assert.deepEqual(res.body.extra.config, testBot.config);
+                            done();
+                        }, 1000);
+                    });
+            })
+    });
+
+    after((done) => {
+        chai.request(server)
+            .delete('/bot/' + testBot.id)
+            .set('Authorization', authKey)
+            .send(testBot)
+            .end((err, res) => {
+                res.should.have.status(200);
+                done();
+            })
     })
+});
+
+describe('PUT start/stop/privacy/status', () => {
+    let testBot = {
+        name : 'TestBot',
+        description : '',
+        test : true,
+        privacy : 'public',
+        botType : 'faq',
+        intents : []
+    };
+    before((done) => {
+        chai.request(server)
+            .post('/bot')
+            .set('Authorization', authKey)
+            .send(testBot)
+            .end((err, res) => {
+                res.should.have.status(200);
+                testBot.id = res.body.extra.botId;
+                done();
+            })
+    });
+    it('should start bot', (done) => {
+        chai.request(server)
+            .put('/bot/' + testBot.id + '/start')
+            .set('Authorization', authKey)
+            .send()
+            .end((err, res) => {
+                res.should.have.status(200);
+                chai.request(server)
+                    .get('/bot/' + testBot.id)
+                    .set('Authorization', authKey)
+                    .send()
+                    .end((err, res) => {
+                        assert.equal(res.body.extra.status, "running");
+                        done();
+                    });
+            })
+    });
+    it('should error start due no auth', (done) => {
+        chai.request(server)
+            .put('/bot/' + testBot.id + '/start')
+            .send()
+            .end((err, res) => {
+                res.should.have.status(401);
+                done();
+            })
+    });
+    it('should error start due false botId', (done) => {
+        chai.request(server)
+            .put('/bot/' + undefined + '/start')
+            .set('Authorization', authKey)
+            .send()
+            .end((err, res) => {
+                res.should.have.status(404);
+                done();
+            })
+    });
+    it('should stop bot', (done) => {
+        chai.request(server)
+            .put('/bot/' + testBot.id + '/stop')
+            .set('Authorization', authKey)
+            .send()
+            .end((err, res) => {
+                res.should.have.status(200);
+                chai.request(server)
+                    .get('/bot/' + testBot.id)
+                    .set('Authorization', authKey)
+                    .send()
+                    .end((err, res) => {
+                        assert.equal(res.body.extra.status, "stopped");
+                        done();
+                    });
+            })
+    });
+    it('should error stop due no auth', (done) => {
+        chai.request(server)
+            .put('/bot/' + testBot.id + '/stop')
+            .send()
+            .end((err, res) => {
+                res.should.have.status(401);
+                done();
+            })
+    });
+    it('should error stop due false botId', (done) => {
+        chai.request(server)
+            .put('/bot/' + undefined + '/stop')
+            .set('Authorization', authKey)
+            .send()
+            .end((err, res) => {
+                res.should.have.status(404);
+                done();
+            })
+    });
+    it('should update privacy', (done) => {
+        chai.request(server)
+            .put('/bot/' + testBot.id + '/privacy')
+            .set('Authorization', authKey)
+            .send({privacy:"public"})
+            .end((err, res) => {
+                res.should.have.status(200);
+                chai.request(server)
+                    .get('/bot/' + testBot.id)
+                    .set('Authorization', authKey)
+                    .send()
+                    .end((err, res) => {
+                        assert.equal(res.body.extra.privacy, "public");
+                        done();
+                    });
+            })
+    });
+    it('should error update privacy due no auth', (done) => {
+        chai.request(server)
+            .put('/bot/' + testBot.id + '/privacy')
+            .send({privacy:"public"})
+            .end((err, res) => {
+                res.should.have.status(401);
+                done();
+            })
+    });
+    it('should error update privacy due false botId', (done) => {
+        chai.request(server)
+            .put('/bot/' + undefined + '/privacy')
+            .set('Authorization', authKey)
+            .send({privacy:"public"})
+            .end((err, res) => {
+                res.should.have.status(404);
+                done();
+            })
+    });
+    it('should error update privacy due false privacy', (done) => {
+        chai.request(server)
+            .put('/bot/' + testBot.id + '/privacy')
+            .set('Authorization', authKey)
+            .send()
+            .end((err, res) => {
+                res.should.have.status(406);
+                done();
+            })
+    });
+
+    it('should error status due no auth', (done) => {
+        chai.request(server)
+            .get('/bot/' + testBot.id + '/status')
+            .send({privacy:"public"})
+            .end((err, res) => {
+                res.should.have.status(401);
+                done();
+            })
+    });
+
+    after((done) => {
+        chai.request(server)
+            .delete('/bot/' + testBot.id)
+            .set('Authorization', authKey)
+            .send(testBot)
+            .end((err, res) => {
+                res.should.have.status(200);
+                done();
+            })
+    })
+})
+
+describe('OPTIONS', () => {
+    it('/auth', (done) => {
+        chai.request(server)
+            .options('/auth')
+            .send()
+            .end((err, res) => {
+                done();
+            })
+    });
+    it('/bot', (done) => {
+        chai.request(server)
+            .options('/bot')
+            .send()
+            .end((err, res) => {
+                done();
+            })
+    });
+    it('/bot/public', (done) => {
+        chai.request(server)
+            .options('/bot/public')
+            .send()
+            .end((err, res) => {
+                done();
+            })
+    });
+    it('/bot/:id', (done) => {
+        chai.request(server)
+            .options('/bot/:id')
+            .send()
+            .end((err, res) => {
+                done();
+            })
+    });
+    it('/bot/:id/config', (done) => {
+        chai.request(server)
+            .options('/bot/:id/config')
+            .send()
+            .end((err, res) => {
+                done();
+            })
+    });
+    it('/bot/:id/status', (done) => {
+        chai.request(server)
+            .options('/bot/:id/status')
+            .send()
+            .end((err, res) => {
+                done();
+            })
+    });
+    it('/bot/:id/start', (done) => {
+        chai.request(server)
+            .options('/bot/:id/start')
+            .send()
+            .end((err, res) => {
+                done();
+            })
+    });
+    it('/bot/:id/stop', (done) => {
+        chai.request(server)
+            .options('/bot/:id/stop')
+            .send()
+            .end((err, res) => {
+                done();
+            })
+    });
+    it('/bot/:id/privacy', (done) => {
+        chai.request(server)
+            .options('/bot/:id/privacy')
+            .send()
+            .end((err, res) => {
+                done();
+            })
+    });
 });

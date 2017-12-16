@@ -1,6 +1,11 @@
 {
   "_id": "5a33b3eb0290b50005fbac94",
   "name": "max",
+  "originIntentState": {
+    "id": -1,
+    "answer": "Placeholder Welcome Message",
+    "nextIntents": [0, 1, 2]
+  },
   "description": "Max",
   "intents": [],
   "test": "true",

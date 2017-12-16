@@ -4,7 +4,7 @@
   "description": "",
   "main": "./bin/www",
   "scripts": {
-    "test": "mocha --exit",
+    "test": "nyc --reporter=lcov mocha --exit --timeout 60000",
     "start": "node ./bin/www"
   },
   "author": "",

@@ -34,7 +34,8 @@ const messages = {
     "privacyUpdated":"Privacy has been updated successfully!",
     "writeDBError":"Error while writing into DB.",
     "readDBError":"Error while reading from DB",
-    "deleteDBError":"Error while deleting from DB"
+    "deleteDBError":"Error while deleting from DB",
+    "nameNeeded":"Error while renaming Bot: Name is needed!"
 };
 
 const maxCallsOnLUIS = 5;
@@ -348,6 +349,7 @@ router.post('/bot', function (req, clientResponse) {
                     };
                     let containerName = "runtime_container_" + userData.name;
                     ncmd.run('docker run -e BOT_ID="' + appId + '" -e name="' + containerName + '" -e MONGO_URI="' + process.env.MONGO_URI + '" --name "' + containerName + '" -d runtime && docker network connect sepravenclaw_default "'  + containerName + '"');
+
                     // TODO Start Docker Image with appId from here!
                     console.log("Successfully wrote to DB!");
                     responseToClient(clientResponse, 201, false, messages.botHasBeenCreated, res);
@@ -388,30 +390,6 @@ router.post('/bot', function (req, clientResponse) {
         });
     }
 });
-
-
-router.post("/test", function(req, res){
-    if(updateIntents([{
-            "id": 0,
-            "name": "password_trouble",
-            "answer": "I will forward you to the password FAQ Bot",
-            "nextIntents": [-1],
-            "forwardTo": "1eed14b1-7bec-4752-a2a2-fc26b146d6ec",
-            "questions": ["I have problems with my password!", "I need a new password", "password", "password problems"]
-        },
-            {
-                "id": 1,
-                "name": "Account_problem",
-                "answer": "Describe you problem.",
-                "nextIntents": [0],
-                "questions": ["I have a problem with my account", "My account is locked", "Account"]
-            }
-        ], "de88eb67-172c-432a-a010-1b5e25c6a35b")){
-        responseToClient(res, 200, false, "Done", "WUHU");
-    }else{
-        responseToClient(res, 400, true, "Not done", "Moah");
-    }
-})
 
 function createLivepersonUser(bot, accountId){
     return new Promise(resolve => {
@@ -469,18 +447,22 @@ function createLivepersonUser(bot, accountId){
                     })
                 })
         }else {
+            console.log("Try FAQ");
             requestPromise(options)
                 .then(response => {
+                    console.log("Logged in");
                     options.headers.Authorization = "Bearer " + response.bearer;
                     options.uri = livePersonSkillDomain;
                     options.body = skillPayload;
                     requestPromise(options).then(response => {
+                        console.log("Skill done");
                         createUserPayload.skillIds = [response.id];
                         skillId = response.id;
                         options.uri = livePersonAccountDomain;
                         options.body = createUserPayload;
                         requestPromise(options)
                             .then(response => {
+                                console.log("All done");
                                 resolve(skillId);
                             })
                     })
@@ -516,6 +498,7 @@ function deleteLivepersonUser(bot, accountId){
             }).then(() => requestPromise(options))
             .then(response => {
                 let accountId = undefined;
+                console.log(response);
                 for(let i = 0; i<response.length && accountId === undefined; i++){
                     if(response[i].loginName === bot.name){
                         accountId = response[i].id;
@@ -550,6 +533,7 @@ router.get('/bot/public', function(req, clientResponse){
         responseToClient(clientResponse, 200, false, messages.botsFound, retval);
     });
 });
+
 /**
  * Delete
  * Deletes the specified Bot.
@@ -596,22 +580,19 @@ router.delete("/bot/:id", function (req, clientResponse) {
             }
 
             else {
-                requestPromise(options).then(res => {
-                    dbcon.readFromDB({
-                        botId: id
-                    }).then(response => {
+                requestPromise(options).then(response => {
                         bot = response;
                         dbcon.deleteFromDB({
                             botId: id
                         }).then(success => {
                             if(success){
+                                console.log("Dleete now from LP");
                                 deleteLivepersonUser(bot, auth);
                                 responseToClient(clientResponse, 200, false, messages.botDeleted);
                             }else{
                                 responseToClient(clientResponse, 404, true, messages.botNotFound);
                             }
                         });
-                    })
                 }).catch(err => {
                     responseToClient(clientResponse, 400, true, err.message);
                 })
@@ -641,10 +622,14 @@ router.delete("/bot/:id", function (req, clientResponse) {
  * Headers:
  *      Authorization - Account ID from LiveEngage to identify the bots this customer owns.
  */
-router.put('/bot/:id', function(req, clientResponse){
+router.put('/bot/:id/rename', function(req, clientResponse){
     let auth = req.header("Authorization");
     if(auth === undefined){
         responseToClient(clientResponse, 401, true, messages.unauthorized);
+        return;
+    }
+    if(req.body.name === "" || req.body.name === undefined){
+        responseToClient(clientResponse, 406, true, messages.nameNeeded);
         return;
     }
     let id = req.params.id;
@@ -744,7 +729,7 @@ router.put('/bot/:id/privacy', function(req, clientResponse){
         return;
     }
     let privacy = req.body.privacy;
-    if(privacy === undefined){
+    if(privacy !== "public" && privacy !== "private"){
         responseToClient(clientResponse, 406, true, messages.privacyNotAcceptable);
         return;
     }
@@ -787,7 +772,7 @@ router.put('/bot/:id/start', function(req, clientResponse){
                 if(success){
                     responseToClient(clientResponse, 200, false, messages.botHasBeenStarted);
                 }else{
-                    responseToClient(clientResponse, 500, true, messages.botNotFound);
+                    responseToClient(clientResponse, 404, true, messages.botNotFound);
                 }
             });
 
@@ -827,7 +812,7 @@ router.put('/bot/:id/stop', function(req, clientResponse){
                 if(success){
                     responseToClient(clientResponse, 200, false, messages.botHasBeenStopped);
                 }else{
-                    responseToClient(clientResponse, 500, true, messages.botNotFound);
+                    responseToClient(clientResponse, 404, true, messages.botNotFound);
                 }
             });
         }
@@ -955,6 +940,9 @@ function addToIntents(intents, children, blocks, intentIDCount) {
 router.parseConfigTointents = function(bot){
     let config = bot.config;
     let welcomeMsg = '';
+    if(bot.originIntentState !== undefined){
+        bot.originIntentState.nextIntents = [];
+    }
     bot.intents = [];
     if(config === null){
         return;
