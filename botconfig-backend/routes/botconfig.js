@@ -104,9 +104,10 @@ function existsAgent(id) {
  */
 router.post("/auth", function(req, clientResponse){
     // TODO Real authorization --> Liveperson!
+    console.log("Got to auth");
     clientResponse.header("Access-Control-Allow-Origin", "*");
-    let username = req.param("username");
-    let password = req.param("password");
+    let username = req.body.username;
+    let password = req.body.password;
     console.log(username + " " + password);
     if(username !== undefined && password !== undefined){
         responseToClient(clientResponse, 200, false, messages.authSuccess, {Authorization:23625217});
@@ -331,7 +332,7 @@ router.post('/bot', function (req, clientResponse) {
             .delay(waitTimeForLUIS)
             .then(res => {
                 userData.id = appId;
-                userData.status = "running";
+                userData.status = "stopped";
 
             })
             .then(() => createLivepersonUser(userData, auth))
@@ -689,7 +690,7 @@ router.put('/bot/:id/config', function(req, clientResponse){
         .then(success => {
             dbcon.readFromDB({botId: id}).then(res => {
                 router.parseConfigTointents(res);
-                updateIntents(res, id);
+                updateIntents(res.intents, id);
                 dbcon.writeToDB({botId: id, data:res}).then(res => {
                     console.log("DONE CONFIG");
                     responseToClient(clientResponse, 200, false, messages.botUpdated, res);
@@ -837,7 +838,7 @@ function updateIntents(intents, botId){
             "Content-Type": "application/json"
         },
         json:true
-    }
+    };
     let existLength = 0;
     return requestPromise(options)
         .then(response => {
@@ -861,14 +862,17 @@ function updateIntents(intents, botId){
                         "name": intents[i].name
                     };
                     requestPromise(options)
-                }, (i+5)*waitTimeForLUIS);
+                }, i*waitTimeForLUIS);
             }
         }).delay((intents.length+1)*waitTimeForLUIS)
         .then(() => {
             options.uri = "https://westus.api.cognitive.microsoft.com/luis/api/v2.0/apps/" + botId + "/versions/1.0/examples";
             options.body = [];
+            console.log(JSON.stringify(intents));
             for(let i = 0; i<intents.length; i++){
+                console.log("i" + i);
                 for(let j = 0; j<intents[i].questions.length; j++) {
+                    console.log("j"+j)
                     options.body.push({
                         text: intents[i].questions[j],
                         intentName: intents[i].name,
@@ -876,12 +880,16 @@ function updateIntents(intents, botId){
                     })
                 }
             }
+            console.log(JSON.stringify(options.body));
+            console.log("Added Examples");
             requestPromise(options);
+            console.log("Examples done.");
         }).delay(waitTimeForLUIS*2)
         .then(() => {
             options.uri = "https://westus.api.cognitive.microsoft.com/luis/api/v2.0/apps/" + botId + "/versions/1.0/train";
             options.body = {};
             requestPromise(options);
+            console.log("Update Train done");
         }).then(() => {
             options.method = "GET";
             let done = false;
@@ -1048,6 +1056,7 @@ router.options("/bot/public", function(req, clientResponse){
 });
 
 router.options("/auth", function(req, clientResponse){
+    console.log("Auth optioned");
     clientResponse.header("Access-Control-Allow-Methods", "POST, OPTIONS");
     clientResponse.header("Access-Control-Allow-Origin", "*");
     clientResponse.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");

@@ -18,5 +18,5 @@ app.set('view engine', 'jade');
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', botconfig);
-
+console.log("Backend is running >>NOW<<");
 module.exports = app;

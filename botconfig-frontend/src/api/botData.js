@@ -10,7 +10,7 @@ export default {
       },
         {
           headers: {
-            Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'
+            Authorization: '23625217'
           }
         }
       )
@@ -23,7 +23,7 @@ export default {
     })
   },
   getBots (cb) {
-    axios.get('/bot', { headers: { Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4' } })
+    axios.get('/bot', { headers: { Authorization: '23625217' } })
           .then(function (response) {
             cb(response.data.extra)
           })
@@ -44,7 +44,7 @@ export default {
       },
         {
           headers: {
-            Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'
+            Authorization: '23625217'
           }
         })
       .then(function (response) {
@@ -64,7 +64,7 @@ export default {
       },
         {
           headers: {
-            Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'
+            Authorization: '23625217'
           }
         })
       .then(function (response) {
@@ -79,7 +79,7 @@ export default {
       },
         {
           headers: {
-            Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'
+            Authorization: '23625217'
           }
         })
       .then(function (response) {
@@ -93,7 +93,7 @@ export default {
   deleteBot (cb, bot) {
     axios.delete('/bot/' + bot.id, {
       headers: {
-        Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'
+        Authorization: '23625217'
       },
       data: {
         test: ''
@@ -108,7 +108,7 @@ export default {
   },
   renameBot (cb, bot) {
     bot[0].name = bot[1].name
-    axios.put('/bot/' + bot[0].id, bot[0], { headers: { Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4' } })
+    axios.put('/bot/' + bot[0].id, bot[0], { headers: { Authorization: '23625217' } })
           .then(function (response) {
             cb(bot)
           })
@@ -118,7 +118,7 @@ export default {
   },
   getBot (id) {
     return new Promise((resolve, reject) => {
-      axios.get('/bot/' + id, { headers: { Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4' } })
+      axios.get('/bot/' + id, { headers: { Authorization: '23625217' } })
         .then((res) => {
           resolve(res.data.extra)
         })

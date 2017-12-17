@@ -70,7 +70,6 @@ runtime.init = function(botId) {
         username: bot.name,
         password: "ROFLTEST"
     };
-    console.log(credentials);
     if(bot.botType === botType.welcome){
         agent = new WelcomeBot(credentials, runtime, bot.originIntentState.answer);
     }else if(bot.botType === botType.faq){
@@ -82,11 +81,11 @@ runtime.init = function(botId) {
 
     agent.on('GeneralBot.ContentEvnet',(contentEvent)=>{
         let conv = bot.conversations[contentEvent.dialogId];
-        conv.failCount = conv.failCount || 0;
         if(conv === undefined){
             runtime.addConversation(contentEvent.dialogId);
             conv = bot.conversations[contentEvent.dialogId];
         }
+        conv.failCount = conv.failCount || 0;
         if(conv.recentlyStarted){
             conv.recentlyStarted = false;
             return;
@@ -123,13 +122,20 @@ runtime.init = function(botId) {
 
 runtime.update = function (updatedBot) {
     if(updatedBot === undefined)return;
-    if(bot === undefined && updatedBot.state === botState.running){
+    if(updatedBot.status !== botState.running){
+        return;
+    }
+    if(bot === undefined){
         bot = updatedBot;
-        runtime.init(updatedBot.id);
-    }else{
         if(bot.conversations !== undefined){
             updatedBot.conversations = bot.conversations;
+        }else{
+            boz.conversations = {};
         }
+        runtime.init(updatedBot.id);
+    }else{
+        console.log("Got in Start");
+
         bot = updatedBot;
         if(bot.state !== updatedBot.state){
             if(updatedBot.state === botState.running){
