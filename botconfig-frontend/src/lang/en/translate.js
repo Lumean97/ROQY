@@ -39,7 +39,8 @@ module.exports = {
     stopped: 'Inactive',
     marketplace: 'Upload',
     marketplaceInnerBubble: 'Do you really want to upload this bot?',
-    upload: 'Upload'
+    upload: 'Upload',
+    cantDeleteRunning: 'Running bots can\'t be deleted! Stop the bot first to delete it.'
   },
   overview: {
     create: 'create new bot',
@@ -58,7 +59,7 @@ module.exports = {
   },
   config: {
     unnamedBlock: 'Unnamed Block',
-    favoriteBlocks: 'Favorite Blocks',
+    favoriteBlocks: 'Favorite Blocks (Are currently not available. Sorry about that. )',
     favoriteHint: 'Drag and Drop your favorite blocks into the bot structure',
     question: 'If user says something similar to:',
     answer: 'Bot replies with?',

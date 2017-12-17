@@ -19,6 +19,13 @@ services:
     - mongodb
     depends_on:
     - mongodb
+    - runtime
+  runtime:
+    build: bot-runtime
+    environment:
+    - BOT_ID=0
+    depends_on:
+    - mongodb
   mongodb:
     restart: always
     image: mongo:latest

@@ -28,7 +28,7 @@
             <div class="row">
               <div v-for="(template, templates) in templates" :key="template.name">
                   <div class="card-wraper">
-                    <div class="card" @click="selectTemplate(template)" :class="{'selected': isSelected(template), 'isAvaible': isAvaible(template)}">
+                    <div class="card" @click="selectTemplate(template)" :class="{'selected': isSelected(template), 'isAvailable': isAvailable(template)}">
                     <img :src="getTemplateImage(template.name)" :alt="template.name">
                     <div class="container">
                       <h4><b>{{template.name}}</b></h4>
@@ -184,7 +184,7 @@ export default {
     * If selected Bot is welcome then use Welcome-Bot Image else Faq-Bot image
     * @param template Current Bot Template
     */
-    isAvaible (template) {
+    isAvailable (template) {
       let welcome = this.$store.getters.getbots.find((bot) => {
         return bot.botType === 'welcome'
       })
@@ -276,7 +276,7 @@ export default {
   .selected {
     border: 3px solid orange;
   }
-  .isAvaible {
+  .isAvailable {
     background-color: #d4d6d8;
     opacity: .5%;
   }

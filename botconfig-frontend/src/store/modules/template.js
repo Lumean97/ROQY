@@ -10,7 +10,7 @@ const state = {
     },
     {
       name: 'faq',
-      description: 'Man nennt mich auch LUIS'
+      description: '58% Frage 42% Antwort'
     }
   ]
 }

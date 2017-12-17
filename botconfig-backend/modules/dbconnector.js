@@ -122,15 +122,19 @@ exports.writeConfig = function (body, id) {
 }
 
 exports.setPrivacy = function (botID, privacy) {
-    return new Promise(function (resolve) {
+    return new Promise(function (resolve, reject) {
         MongoClient.connect(url, function (err, db) {
 
-            let bot = db.collection('botAgents').update({ id: botID }, {
+            let bot = db.collection('botAgents').updateOne({ id: botID }, {
                 $set: {
                     privacy: privacy
                 }
-            }).then(() => {
-                resolve();
+            }).then(res => {
+                if(res.result.n <= 0){
+                    reject();
+                }else{
+                    resolve();
+                }
             }).catch(function (err) {
                 if (err) {
                     reject();

@@ -51,7 +51,6 @@ describe('/POST botconfig', (suite) => {
             .send(testBot)
             .end((err, res) => {
                 if (err) {
-                    console.log('pinkSparkles is a Zicke and dont wants to get inserted')
                 }
                 else {
                     res.should.have.status(200)
@@ -60,13 +59,12 @@ describe('/POST botconfig', (suite) => {
                         .set('Authorization', authKey)
                         .send(testBot)
                         .end((err, res) => {
-                            if (err) console.log('pinkSparkles isnt banned yet!')
                             done();
                         })
                 }
             });
     })
-    /*
+
     it('should insert REAL bot', (done) => {
         let testBot = { name: 'pinkSparklesforLUIS', description: 'Titty streamer on twitch.tv', privacy: 'public', botType: 'faq', intents: [] };
         chai.request(server)
@@ -75,7 +73,6 @@ describe('/POST botconfig', (suite) => {
             .send(testBot)
             .end((err, res) => {
                 if (err) {
-                    console.log('pinkSparkles is a Zicke and dont wants to get inserted')
                 }
                 else {
                     res.should.have.status(201)
@@ -84,7 +81,6 @@ describe('/POST botconfig', (suite) => {
                         .set('Authorization', authKey)
                         .send()
                         .end((err, res) => {
-                            if (err) console.log('pinkSparkles isnt banned yet!')
                             done();
                         })
                 }
@@ -98,7 +94,6 @@ describe('/POST botconfig', (suite) => {
             .send(testBot)
             .end((err, res) => {
                 if (err) {
-                    console.log('pinkSparkles is a Zicke and dont wants to get inserted')
                 }
                 else {
                     res.should.have.status(201)
@@ -107,13 +102,12 @@ describe('/POST botconfig', (suite) => {
                         .set('Authorization', authKey)
                         .send()
                         .end((err, res) => {
-                            if (err) console.log('pinkSparkles isnt banned yet!')
                             done();
                         })
                 }
             });
     });
-*/
+
 })
 
 /**
@@ -156,7 +150,6 @@ describe('/DELETE botconfig', () => {
             .send(testBot)
             .end((err, res) => {
                 if (err) {
-                    console.log('Martina thinks, mongo is a weirdo and cant get inserted.')
                 }
                 botId = res.body.extra.botId;
                 chai.request(server)
@@ -243,13 +236,11 @@ describe('/PUT rename', () => {
             })
     });
     after((done) => {
-        console.log("Last")
         chai.request(server)
             .delete('/bot/' + testBot.id)
             .set('Authorization', authKey)
             .send(testBot)
             .end((err, res) => {
-                if (err) console.log('pinkSparkles isnt banned yet!')
                 done();
             })
     })
@@ -297,7 +288,6 @@ let testBot = {
         .send()
         .end((err, res) => {
             if (err) {
-                console.log('StartStopBot cant get deleted!')
             }
         })
     })
@@ -338,7 +328,6 @@ describe('GET status', () => {
             .send(testBot)
             .end((err, res) => {
                 if (err) {
-                    console.log('Bot with name Statussymbol could not be inserted!');
                     done(err);
                 }
                 else {
@@ -355,18 +344,15 @@ describe('GET status', () => {
             .send()
             .end((err, res) => {
                 if (err) {
-                    console.log('Status cant got read from DB')
                 }
                 else {
                     res.should.have.status(200);
-                    console.log(testBotId);
                     chai.request(server)
                         .delete('/bot/' + testBotId)
                         .set('Authorization', authKey)
                         .send(testBot)
                         .end((err, res) => {
                             if (err) {
-                                console.log('Statussymbol cant get deleted ')
                                 done(err);
                             }
                         })
@@ -480,11 +466,8 @@ describe('PUT config', () => {
                     .set('Authorization', authKey)
                     .send()
                     .end((err, res) => {
-                        setTimeout(() => {
-                            console.log(res.body);
-                            assert.deepEqual(res.body.extra.config, testBot.config);
-                            done();
-                        }, 1000);
+                        assert.deepEqual(res.body.extra.config, testBot.config);
+                        done();
                     });
             })
     });

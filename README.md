@@ -1,5 +1,8 @@
 # SEP-Ravenclaw
 
+## Setup
+See [installation.md](https://github.com/Lumean97/SEP-Ravenclaw/blob/master/installation.md).
+
 ## Allgemeine Infos zur Dateistruktur
 ### bot-runtime
 Hier soll die Bot Runtime entstehen. Das bedeutet: Die Umgebung in der der Bot am ende läuft. Zurzeit ist hier noch nichts vorhanden bis auf Boilerplate Code.

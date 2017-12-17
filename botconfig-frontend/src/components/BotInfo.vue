@@ -4,11 +4,8 @@
       <div>
         <div class="header">
           <md-switch v-if="parent === 'overview'" style="margin: 10px 0 0 0" class="md-primary" v-on:change="changeBot(botData)" v-model="isRunning"></md-switch>
-          <md-menu  md-direction="bottom left">
-            <md-button v-if="parent === 'overview'" style="padding:0;margin-top:-10px;color: 7F7F7F" class="md-icon-button header-menu-btn" md-menu-trigger>
-              <md-icon>more_vert</md-icon>
-            </md-button>
-            <md-button v-if="parent === 'marketplace'" style="padding:0;margin-top:10px;color: 7F7F7F" class="md-icon-button header-menu-btn" md-menu-trigger>
+          <md-menu md-direction="bottom left">
+            <md-button style="padding:0;margin: -10px 0 0 0;color: 7F7F7F" class="md-icon-button header-menu-btn" md-menu-trigger>
               <md-icon>more_vert</md-icon>
             </md-button>
 
@@ -37,7 +34,7 @@
         </div>
       </div>
       <div id="imgwrapper">
-        <img style="width:180px" :src="botImage" :alt="botData.name">
+        <img style="width:180px;" :style="{ opacity: isRunning ? 1 : 0.4 }" :src="botImage" :alt="botData.name">
       </div>
 
       <div class="info-wrapper">
@@ -56,15 +53,16 @@
 
       <md-dialog-actions>
         <md-button class="md-primary" v-on:click="closeDialog(confirm.ref1)"> {{$lang.translate.info.cancel}}</md-button>
-        <md-button class="md-primary" v-on:click="deleteItem()">{{$lang.translate.info.ok}}</md-button>
+        <md-button class="md-primary" v-on:click="deleteBot()">{{$lang.translate.info.ok}}</md-button>
       </md-dialog-actions>
     </md-dialog>
 
     <md-dialog md-open-from="#renameconfirm" md-close-to="#renameconfirm" ref='dialog2'>
       <md-dialog-title>{{$lang.translate.info.renameTitle}}</md-dialog-title>
 
-      <md-dialog-content><md-input-container>
-        <label{{$lang.translate.creater.new_name}}</label>
+      <md-dialog-content>
+        <md-input-container>
+          <label>{{$lang.translate.creator.new_name}}</label>
           <md-input v-model="newName" placeholder="New Name"   required></md-input>
         </md-input-container>
       </md-dialog-content>
@@ -165,7 +163,11 @@ export default {
     /**
     * Method to delete the selected Bot
     */
-    deleteItem () {
+    deleteBot () {
+      if (!this.isConfigurable) {
+        alert(this.$lang.translate.info.cantDeleteRunning)
+        return
+      }
       this.$store.dispatch('deleteBot', this.botData)
       this.closeDialog(this.confirm.ref1)
     },
@@ -269,7 +271,8 @@ export default {
     display: block;
     text-transform: uppercase;
   }
-  .md-dialog {
+
+  md-dialog {
     padding: 20px;
   }
   

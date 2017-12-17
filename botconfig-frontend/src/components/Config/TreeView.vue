@@ -1,6 +1,11 @@
 <template>
-  <div id="list-container" >
-    <div @click="select(index)" class="block-container" :class="{'selected' : isSelected(index), 'primary' : isPrimarySelection(index)}" v-for="(block, index) in group" :key="block.id">
+  <div id="list-container" @drop="dropEnd($event)">
+    <div 
+    @click="select(index)" 
+    class="block-container" 
+    :class="{'selected' :isSelected(index), 'primary' : isPrimarySelection(index)}" 
+    v-for="(block, index) in group" 
+    :key="block.id">
       <span>{{blocks[block.block].title}}</span>
     </div>
     <div v-if="hasNewButton()" @click="addNew()" class="block-container">

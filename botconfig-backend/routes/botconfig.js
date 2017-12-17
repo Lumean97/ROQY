@@ -4,6 +4,7 @@ const requestPromise = require('request-promise');
 const router = express.Router();
 const ILuis = require('luis-node-sdk');
 const dbcon = require('../modules/dbconnector');
+const testingEnabled = false;
 
 var APPID = "4f51b70e-cc17-46b8-8009-801a34e28c90";
 const APPKEY = "ed2ff1a97f924b8e8a1402e6700a8bf4";
@@ -210,7 +211,7 @@ router.post('/bot', function (req, clientResponse) {
         json: true
     };
 
-    if (userData.test === undefined){
+    if (userData.test === undefined || !testingEnabled){
         requestPromise(options)
             .then(res => {
                 appId = res;
@@ -563,7 +564,7 @@ router.delete("/bot/:id", function (req, clientResponse) {
     };
     let userData = req.body;
     let bot = undefined;
-    if(userData.test !== undefined){
+    if(userData.test !== undefined && testingEnabled){
         dbcon.deleteFromDB({
             botId:id
         }).then(success => {
@@ -689,9 +690,10 @@ router.put('/bot/:id/config', function(req, clientResponse){
             dbcon.readFromDB({botId: id}).then(res => {
                 router.parseConfigTointents(res);
                 updateIntents(res, id);
-                dbcon.writeToDB({botId: id, data:res});
-                console.log("DONE CONFIG");
-                responseToClient(clientResponse, 200, false, messages.botUpdated, res);
+                dbcon.writeToDB({botId: id, data:res}).then(res => {
+                    console.log("DONE CONFIG");
+                    responseToClient(clientResponse, 200, false, messages.botUpdated, res);
+                });
             })
         });
 })
@@ -736,9 +738,11 @@ router.put('/bot/:id/privacy', function(req, clientResponse){
     dbcon.setPrivacy(id, privacy)
         .then(function () {
             responseToClient(clientResponse, 200, false, messages.privacyUpdated);
+        }, function() {
+            responseToClient(clientResponse, 200, flase, messages.botNotFound);
         })
         .catch(function () {
-            responseToClient(clientResponse, 500, true, messages.botNotFound);
+            responseToClient(clientResponse, 404, true, messages.botNotFound);
         })
 });
 
@@ -763,7 +767,7 @@ router.put('/bot/:id/start', function(req, clientResponse){
     dbcon.readFromDB({
         botId:id
     }).then(res => {
-        if(res !== {}){
+        if(res){
             res.status = "running";
             let write = dbcon.writeToDB({
                 botId:id,
@@ -775,8 +779,8 @@ router.put('/bot/:id/start', function(req, clientResponse){
                     responseToClient(clientResponse, 404, true, messages.botNotFound);
                 }
             });
-
-
+        }else{
+            responseToClient(clientResponse, 404, true, messages.botNotFound);
         }
 
     });
@@ -803,7 +807,7 @@ router.put('/bot/:id/stop', function(req, clientResponse){
     dbcon.readFromDB({
         botId:id
     }).then(res => {
-        if(res !== {}){
+        if(res){
             res.status = "stopped";
             let write = dbcon.writeToDB({
                 botId:id,
@@ -815,6 +819,8 @@ router.put('/bot/:id/stop', function(req, clientResponse){
                     responseToClient(clientResponse, 404, true, messages.botNotFound);
                 }
             });
+        }else{
+            responseToClient(clientResponse, 404, true, messages.botNotFound);
         }
 
     });

@@ -20,12 +20,10 @@
           :group="group.children" 
           :blocks="blocks" 
           :selected="group.selection" 
-          @drop="favDrop(index)" 
           class="wrapper default-shadow"></tree-view>
         </div>
         <div class="block-wrapper ">
           <block-view 
-          v-on:favDrag="favStartDrag($event)" 
           :blocks="favorites">
           </block-view>
         </div>
@@ -68,7 +66,6 @@ export default {
       blockIDCount: 0,
       blocks: [ ],
       groups: [ ],
-      favDrag: null,
       loaded: false
     }
   },
@@ -312,15 +309,6 @@ export default {
      */
     testBot () {
       this.saveConfig(true)
-    },
-    favStartDrag (id) {
-      this.favDrag = id
-      console.log('start drag : ' + id)
-    },
-    favDrop (row) {
-      console.log('complete drag : ' + this.favDrag)
-      this.subGroups[this.rowSelect].children.push(this.favDrag)
-      this.favDrag = null
     },
     loadBot () {
       api.getBot(this.id)

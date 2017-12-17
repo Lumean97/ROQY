@@ -4,7 +4,7 @@
       <h2>{{$lang.translate.config.favoriteBlocks}}</h2>
       <h4>{{$lang.translate.config.favoriteHint}}</h4>
     </div>
-    <div draggable="true" @dragstart="setDrag(block.id)" class="default-shadow blockBubble" v-for="(block, blocks) in blocks" :key="block.id">
+    <div class="default-shadow blockBubble" v-for="(block, blocks) in blocks" :key="block.id">
       <span>{{block.title}}</span>
     </div>
   </div>
@@ -14,9 +14,6 @@
 export default {
   props: ['blocks'],
   methods: {
-    setDrag (id) {
-      this.$emit('favDrag', id)
-    }
   }
 }
 </script>

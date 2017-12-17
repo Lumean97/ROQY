@@ -13,7 +13,7 @@
         <input v-model="search" :placeholder="$lang.translate.overview.search" style="padding:5px;padding-left:20px;"></input>
         <md-icon style="margin-right:10px;">search</md-icon>
       </md-field>
-      <router-link style="text-transform: uppercase;"class="default-btn" tag="button" to="/newBot">{{$lang.translate.overview.create}}</router-link>
+      <router-link class="default-btn" tag="button" to="/newBot">{{$lang.translate.overview.create}}</router-link>
     </div>
     <md-layout class="overview-wrapper">
       <md-layout style="flex:unset;" v-for="(bot, bots) in bots" :key="bot.id">

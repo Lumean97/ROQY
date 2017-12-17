@@ -3,13 +3,12 @@
   <div>
     <md-toolbar class="md-dense" style="color: white; background-color: #414040;">
       <router-link to='/bots'><img class="logo" src="../assets/ROQY.png" alt="ROQY"></router-link>
-      <!--TODO "md-title" dient nur als Platzhalter zwischen Logo und DE|EN.
-          Platzhalter entfernen und Logo + Sprachauswahl richtig einordnen!-->
       <h1 class="md-title"></h1>
       <div class="lg">
         <div>
-            <span @click="changeLang('de')" class="de header-text" >DE</span>
-            <span @click="changeLang('en')" class="header-text">EN</span> 
+            <span @click="changeLang('de')" :class="{ selectedLang: lang=='de'}" class="header-text">DE</span>
+            <span class="header-text">|</span>
+            <span @click="changeLang('en')" :class="{ selectedLang: lang=='en'}" class="header-text">EN</span> 
         </div>
       </div>
       <span @click="logout()" class="header-text" style="margin-left:10px">{{$lang.translate.header.bot_login}}</span>
@@ -25,7 +24,8 @@ export default {
   name: 'header',
   data () {
     return {
-      name: 'header'
+      name: 'header',
+      lang: 'en'
     }
   },
   methods: {
@@ -33,6 +33,7 @@ export default {
     * @param lg language that will be selected
     */
     changeLang (lg) {
+      this.lang = lg
       this.$lang.setLang(lg)
     },
     /**
@@ -77,10 +78,6 @@ span {
     font-family: 'Roboto';
     font-size: 100%;
 }
-span.de {
-  border-right: 1px solid white;
-  padding-right: 5px;
-}
 .md-ripple {
   animation: none !important;
 }
@@ -101,5 +98,8 @@ span.de {
 }
 .header-text{
   color:white;
+}
+.selectedLang {
+  font-weight: 600;
 }
 </style>

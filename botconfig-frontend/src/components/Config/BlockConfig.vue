@@ -24,7 +24,12 @@
               </md-button>
           </div>
           <div>
-              <input class="chips" v-model='question' :placeholder='$lang.translate.config.add' name='newBlock' @keyup.enter='addNewQuestion()'/>
+              <input class="chips"
+              v-model='question'
+              :placeholder='$lang.translate.config.add' 
+              name='newBlock'
+              v-on:blur='addNewQuestion()'
+              @keyup.enter='addNewQuestion()'/>
           </div>
         </div>
       </div>

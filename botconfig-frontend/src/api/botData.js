@@ -108,21 +108,13 @@ export default {
   },
   renameBot (cb, bot) {
     bot[0].name = bot[1].name
-    axios.put('/bot/' + bot[0].id + '/rename', {
-      name: 'bot.name'
-    },
-      {
-        headers: {
-          Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4'
-        }
-      }
-    )
-    .then(function (response) {
-      cb(bot)
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
+    axios.put('/bot/' + bot[0].id, bot[0], { headers: { Authorization: 'ed2ff1a97f924b8e8a1402e6700a8bf4' } })
+          .then(function (response) {
+            cb(bot)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
   },
   getBot (id) {
     return new Promise((resolve, reject) => {

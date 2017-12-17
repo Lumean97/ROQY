@@ -13,7 +13,7 @@
 
     <div v-if="loaded" id="test-card" class="default-shadow">
       <div class="card-header">
-            <img src="../assets/bot_orange.svg">
+            <img :src=botImage>
             <h3 id="title">{{bot.name}}</h3>
       </div>
       <div id="card-content">
@@ -37,6 +37,8 @@
 
 <script>
 import api from '../api/botData'
+import botWelcome from '../assets/bot_orange.svg'
+import botFaq from '../assets/bot_violett.svg'
 
 export default {
   name: 'test',
@@ -52,6 +54,14 @@ export default {
   },
   created () {
     this.loadBot()
+  },
+  computed: {
+    /**
+    * If selected Bot is welcome then use Welcome-Bot Image else Faq-Bot image
+    */
+    botImage () {
+      return this.bot.botType === 'welcome' ? botWelcome : botFaq
+    }
   },
   methods: {
     addMessage () {
@@ -216,12 +226,11 @@ input {
   text-decoration: none;
   display: inline-block;
   cursor: pointer;
-  float:right;
   margin-top: 2px;
   margin-right: 3%;
 }
 .message-right {
-  background-color: ##58B8DD;
+  background-color: #58B8DD;
   max-width: 45%;
   border-radius: 10px;
   padding: 6px 7px;
