@@ -55,6 +55,7 @@ exports.writeToDB = function (request) {
                     }
                 });
             }
+            db.close();
         });
     });
 };
@@ -98,6 +99,7 @@ exports.readFromDB = function (request) {
                     }
                 });
             }
+            db.close();
         });
     });
 }
@@ -117,6 +119,7 @@ exports.writeConfig = function (body, id) {
                     reject();
                 }
             })
+            db.close();
         })
     })
 }
@@ -136,6 +139,7 @@ exports.setPrivacy = function (botID, privacy) {
                     reject();
                 }
             })
+            db.close()
         })
     })
 }
@@ -168,9 +172,8 @@ exports.deleteFromDB = function (request) {
                             db.collection("botAgents").deleteOne({ id: request.botId });
                             resolve(true); //Gebe ich an dieser Stelle nicht den kompletten bot zurück???
                         }
-
-
                     }
+                    db.close();
                 });
             }
         });

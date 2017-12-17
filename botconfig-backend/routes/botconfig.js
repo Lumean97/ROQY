@@ -516,12 +516,18 @@ function deleteLivepersonUser(bot, accountId){
     })
 }
 
-
+/**
+ * Returns all public-Bots
+ */
 router.get('/bot/public', function(req, clientResponse){
+    let auth = req.header("Authorization");
+    if(auth === undefined){
+        responseToClient(clientResponse, 401, true, messages.unauthorized);
+        return;
+    }
     clientResponse.header("Access-Control-Allow-Origin", "*");
     clientResponse.setHeader("Content-Type", "text/html; charset=utf-8");
-    let bots = dbcon.readFromDB({
-    }).then(res => {
+    let bots = dbcon.readFromDB({}).then(res => {
         let retval = [];
         for(let i = 0; i<res.length; i++){
             if(res[i].privacy === "public"){
